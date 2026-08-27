@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { eq, asc } from "drizzle-orm";
+import { and, eq, asc } from "drizzle-orm";
 import { db, goals, milestones, areas, moneyAccounts } from "@/db";
+import { requireUserId } from "@/lib/session";
 import {
   updateGoal, deleteGoal, addMilestone, toggleMilestone, deleteMilestone, setGoalStatus,
 } from "@/lib/actions";
@@ -20,14 +21,18 @@ export default async function GoalDetail({
   const id = Number(idStr);
   if (!Number.isInteger(id)) notFound();
 
-  const [g] = await db.select().from(goals).where(eq(goals.id, id));
+  const uid = await requireUserId();
+  const [g] = await db
+    .select()
+    .from(goals)
+    .where(and(eq(goals.id, id), eq(goals.userId, uid)));
   if (!g) notFound();
 
   const [ms, areaList, accts, withProgress] = await Promise.all([
     db.select().from(milestones).where(eq(milestones.goalId, id)).orderBy(asc(milestones.dueDate), asc(milestones.id)),
-    db.select().from(areas).orderBy(asc(areas.sort), asc(areas.id)),
-    db.select().from(moneyAccounts),
-    getGoalsWithProgress(),
+    db.select().from(areas).where(eq(areas.userId, uid)).orderBy(asc(areas.sort), asc(areas.id)),
+    db.select().from(moneyAccounts).where(eq(moneyAccounts.userId, uid)),
+    getGoalsWithProgress(uid),
   ]);
   const gp = withProgress.find((x) => x.id === id);
   const area = areaList.find((a) => a.id === g.areaId);

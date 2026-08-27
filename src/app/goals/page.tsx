@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { db, areas } from "@/db";
-import { asc } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { getGoalsWithProgress } from "@/lib/progress";
 import { createGoal } from "@/lib/actions";
+import { requireUserId } from "@/lib/session";
 import { ddayLabel, fmtDate } from "@/lib/dates";
 import {
   Card, DdayBadge, Empty, ProgressBar, SectionTitle,
@@ -19,9 +20,10 @@ const METRIC_LABEL: Record<string, string> = {
 };
 
 export default async function GoalsPage() {
+  const uid = await requireUserId();
   const [gs, areaList] = await Promise.all([
-    getGoalsWithProgress(),
-    db.select().from(areas).orderBy(asc(areas.sort), asc(areas.id)),
+    getGoalsWithProgress(uid),
+    db.select().from(areas).where(eq(areas.userId, uid)).orderBy(asc(areas.sort), asc(areas.id)),
   ]);
   const activeAreas = areaList.filter((a) => !a.archived);
   const active = gs.filter((g) => g.status === "active");

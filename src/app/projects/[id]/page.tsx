@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { db, projects, tasks, kpis, areas, goals } from "@/db";
+import { requireUserId } from "@/lib/session";
 import {
   updateProject, deleteProject, createTask, toggleTask, deleteTask,
   addKpi, updateKpi, deleteKpi,
@@ -20,14 +21,18 @@ export default async function ProjectDetail({
   const id = Number(idStr);
   if (!Number.isInteger(id)) notFound();
 
-  const [p] = await db.select().from(projects).where(eq(projects.id, id));
+  const uid = await requireUserId();
+  const [p] = await db
+    .select()
+    .from(projects)
+    .where(and(eq(projects.id, id), eq(projects.userId, uid)));
   if (!p) notFound();
 
   const [ts, ks, areaList, goalList] = await Promise.all([
     db.select().from(tasks).where(eq(tasks.projectId, id)).orderBy(asc(tasks.dueDate), asc(tasks.id)),
     db.select().from(kpis).where(eq(kpis.projectId, id)).orderBy(asc(kpis.id)),
-    db.select().from(areas),
-    db.select().from(goals),
+    db.select().from(areas).where(eq(areas.userId, uid)),
+    db.select().from(goals).where(eq(goals.userId, uid)),
   ]);
   const area = areaList.find((a) => a.id === p.areaId);
   const doneCount = ts.filter((t) => t.done).length;

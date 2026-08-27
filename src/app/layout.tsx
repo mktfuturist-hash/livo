@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Sidebar } from "@/components/sidebar";
+import { currentUser } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "Livo",
@@ -14,12 +15,13 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const user = await currentUser();
   return (
     <html lang="ko" className="h-full antialiased">
       <body className="min-h-full bg-neutral-50 text-neutral-900">
         <div className="flex min-h-screen">
-          <Sidebar />
+          <Sidebar user={user} />
           <main className="min-w-0 flex-1 px-4 pb-24 pt-6 md:px-8 md:pb-10">
             <div className="mx-auto max-w-5xl">{children}</div>
           </main>

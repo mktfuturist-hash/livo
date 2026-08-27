@@ -1,5 +1,6 @@
-import { asc, desc } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { db, moneyAccounts, moneySnapshots, moneyTxns } from "@/db";
+import { requireUserId } from "@/lib/session";
 import {
   createAccount, updateAccountBalance, deleteAccount, addTxn, deleteTxn,
 } from "@/lib/actions";
@@ -60,10 +61,11 @@ function TrendChart({ points }: { points: { month: string; netWorth: number }[] 
 
 export default async function MoneyPage() {
   const month = monthStr();
+  const uid = await requireUserId();
   const [accts, snaps, txns] = await Promise.all([
-    db.select().from(moneyAccounts).orderBy(asc(moneyAccounts.id)),
-    db.select().from(moneySnapshots).orderBy(asc(moneySnapshots.month)),
-    db.select().from(moneyTxns).orderBy(desc(moneyTxns.date), desc(moneyTxns.id)),
+    db.select().from(moneyAccounts).where(eq(moneyAccounts.userId, uid)).orderBy(asc(moneyAccounts.id)),
+    db.select().from(moneySnapshots).where(eq(moneySnapshots.userId, uid)).orderBy(asc(moneySnapshots.month)),
+    db.select().from(moneyTxns).where(eq(moneyTxns.userId, uid)).orderBy(desc(moneyTxns.date), desc(moneyTxns.id)),
   ]);
 
   // ── 머니보드 집계 ──

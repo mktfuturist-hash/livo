@@ -1,20 +1,28 @@
 import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
+import { authConfig } from "./auth.config";
 
-// Google OAuth 환경변수가 있을 때만 인증 활성화. 없으면(로컬 개발) 바이패스.
-export const authEnabled = !!(
-  process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET
-);
+export { authEnabled } from "./auth.config";
 
+// 구글 로그인 = 회원가입. 첫 로그인 시 users에 upsert하고 내부 id를 JWT에 심는다.
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  secret: process.env.AUTH_SECRET ?? "dev-only-secret",
-  trustHost: true,
-  providers: authEnabled ? [Google] : [],
+  ...authConfig,
   callbacks: {
-    // 화이트리스트: ALLOWED_EMAIL 한 계정만 통과
-    signIn({ user }) {
-      const allowed = (process.env.ALLOWED_EMAIL ?? "").trim().toLowerCase();
-      return !!allowed && user.email?.toLowerCase() === allowed;
+    async jwt({ token, user }) {
+      const email = user?.email ?? (token.email as string | undefined);
+      if (!token.uid && email) {
+        // 동적 import: 이 콜백은 Node 라우트에서만 실행되므로 edge 번들에 db가 딸려가지 않는다
+        const { upsertUser } = await import("@/lib/user");
+        token.uid = await upsertUser(
+          email,
+          (user?.name ?? token.name ?? null) as string | null,
+          (user?.image ?? token.picture ?? null) as string | null
+        );
+      }
+      return token;
+    },
+    session({ session, token }) {
+      (session as unknown as { uid?: number }).uid = token.uid as number | undefined;
+      return session;
     },
   },
 });

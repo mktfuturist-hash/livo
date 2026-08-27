@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db, reviews } from "@/db";
+import { requireUserId } from "@/lib/session";
 import { createReview } from "@/lib/actions";
 import { fmtDate } from "@/lib/dates";
 import { Card, Empty, SectionTitle } from "@/components/ui";
@@ -14,7 +15,12 @@ const SCOPE_META = {
 } as const;
 
 export default async function ReviewsPage() {
-  const list = await db.select().from(reviews).orderBy(desc(reviews.date), desc(reviews.id));
+  const uid = await requireUserId();
+  const list = await db
+    .select()
+    .from(reviews)
+    .where(eq(reviews.userId, uid))
+    .orderBy(desc(reviews.date), desc(reviews.id));
 
   return (
     <div className="space-y-6">

@@ -1,5 +1,6 @@
-import { asc, inArray } from "drizzle-orm";
+import { asc, eq, inArray } from "drizzle-orm";
 import { db, routines, routineLogs, goals, areas } from "@/db";
+import { requireUserId } from "@/lib/session";
 import {
   createRoutine, logRoutine, unlogRoutineToday, setRoutineStatus, deleteRoutine,
 } from "@/lib/actions";
@@ -9,10 +10,11 @@ import { Card, Empty, SectionTitle } from "@/components/ui";
 export const dynamic = "force-dynamic";
 
 export default async function RoutinesPage() {
+  const uid = await requireUserId();
   const [rts, goalList, areaList] = await Promise.all([
-    db.select().from(routines).orderBy(asc(routines.id)),
-    db.select().from(goals),
-    db.select().from(areas),
+    db.select().from(routines).where(eq(routines.userId, uid)).orderBy(asc(routines.id)),
+    db.select().from(goals).where(eq(goals.userId, uid)),
+    db.select().from(areas).where(eq(areas.userId, uid)),
   ]);
   const logs = rts.length
     ? await db

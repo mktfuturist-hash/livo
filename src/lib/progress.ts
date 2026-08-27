@@ -8,7 +8,7 @@ import {
   routineLogs,
   moneyAccounts,
 } from "@/db";
-import { inArray, sql } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 
 export type Goal = typeof goals.$inferSelect;
 export type Milestone = typeof milestones.$inferSelect;
@@ -22,8 +22,8 @@ export type GoalWithProgress = Goal & {
   milestoneTotal: number;
 };
 
-export async function getGoalsWithProgress(): Promise<GoalWithProgress[]> {
-  const gs: Goal[] = await db.select().from(goals);
+export async function getGoalsWithProgress(uid: number): Promise<GoalWithProgress[]> {
+  const gs: Goal[] = await db.select().from(goals).where(eq(goals.userId, uid));
   if (gs.length === 0) return [];
   const ids = gs.map((g) => g.id);
 
@@ -66,7 +66,10 @@ export async function getGoalsWithProgress(): Promise<GoalWithProgress[]> {
       : [];
 
   // money: 연결 계좌 잔액
-  const accts = await db.select().from(moneyAccounts);
+  const accts = await db
+    .select()
+    .from(moneyAccounts)
+    .where(eq(moneyAccounts.userId, uid));
 
   return gs.map((g) => {
     const myMs = ms.filter((m) => m.goalId === g.id);

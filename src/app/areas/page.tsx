@@ -1,12 +1,18 @@
 import { db, areas } from "@/db";
-import { asc } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { createArea, toggleAreaArchived } from "@/lib/actions";
+import { requireUserId } from "@/lib/session";
 import { Card, Empty, PILLARS, PillarChip, SectionTitle, type Pillar } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
 export default async function AreasPage() {
-  const all = await db.select().from(areas).orderBy(asc(areas.sort), asc(areas.id));
+  const uid = await requireUserId();
+  const all = await db
+    .select()
+    .from(areas)
+    .where(eq(areas.userId, uid))
+    .orderBy(asc(areas.sort), asc(areas.id));
   const active = all.filter((a) => !a.archived);
   const archived = all.filter((a) => a.archived);
 

@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db, reviews } from "@/db";
+import { requireUserId } from "@/lib/session";
 import { updateReview, deleteReview } from "@/lib/actions";
 import { fmtDate } from "@/lib/dates";
 import { Card } from "@/components/ui";
@@ -19,7 +20,11 @@ export default async function ReviewDetail({
   const id = Number(idStr);
   if (!Number.isInteger(id)) notFound();
 
-  const [r] = await db.select().from(reviews).where(eq(reviews.id, id));
+  const uid = await requireUserId();
+  const [r] = await db
+    .select()
+    .from(reviews)
+    .where(and(eq(reviews.id, id), eq(reviews.userId, uid)));
   if (!r) notFound();
 
   return (

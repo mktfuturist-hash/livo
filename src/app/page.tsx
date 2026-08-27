@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { asc, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import { db, areas, tasks, routines, routineLogs } from "@/db";
 import { getGoalsWithProgress } from "@/lib/progress";
 import { createTask, toggleTask, logRoutine, unlogRoutineToday } from "@/lib/actions";
 import { computeRoutineStats } from "@/lib/routine-stats";
+import { requireUserId } from "@/lib/session";
 import { todayStr, ddayLabel, fmtDate } from "@/lib/dates";
 import {
   Card, DdayBadge, Empty, PILLARS, ProgressBar, SectionTitle, type Pillar,
@@ -13,11 +14,12 @@ export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const today = todayStr();
+  const uid = await requireUserId();
   const [gs, areaList, openTasks, activeRoutines] = await Promise.all([
-    getGoalsWithProgress(),
-    db.select().from(areas).orderBy(asc(areas.sort), asc(areas.id)),
-    db.select().from(tasks).where(eq(tasks.done, false)).orderBy(asc(tasks.dueDate)),
-    db.select().from(routines).where(eq(routines.status, "active")).orderBy(asc(routines.id)),
+    getGoalsWithProgress(uid),
+    db.select().from(areas).where(eq(areas.userId, uid)).orderBy(asc(areas.sort), asc(areas.id)),
+    db.select().from(tasks).where(and(eq(tasks.userId, uid), eq(tasks.done, false))).orderBy(asc(tasks.dueDate)),
+    db.select().from(routines).where(and(eq(routines.userId, uid), eq(routines.status, "active"))).orderBy(asc(routines.id)),
   ]);
   const rtLogs = activeRoutines.length
     ? await db

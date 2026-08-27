@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db, notes, areas, goals, projects } from "@/db";
+import { requireUserId } from "@/lib/session";
 import { createNote } from "@/lib/actions";
 import { fmtDate } from "@/lib/dates";
 import { Card, Empty, SectionTitle } from "@/components/ui";
@@ -25,11 +26,12 @@ export default async function NotesPage({
   const statusFilter = typeof sp.status === "string" ? sp.status : "active";
   const q = typeof sp.q === "string" ? sp.q.trim() : "";
 
+  const uid = await requireUserId();
   const [all, areaList, goalList, prjList] = await Promise.all([
-    db.select().from(notes).orderBy(desc(notes.createdAt)),
-    db.select().from(areas),
-    db.select().from(goals),
-    db.select().from(projects),
+    db.select().from(notes).where(eq(notes.userId, uid)).orderBy(desc(notes.createdAt)),
+    db.select().from(areas).where(eq(areas.userId, uid)),
+    db.select().from(goals).where(eq(goals.userId, uid)),
+    db.select().from(projects).where(eq(projects.userId, uid)),
   ]);
 
   const list = all.filter(

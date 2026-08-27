@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db, notes, areas, goals, projects } from "@/db";
+import { requireUserId } from "@/lib/session";
 import { updateNote, deleteNote } from "@/lib/actions";
 import { Card, SectionTitle } from "@/components/ui";
 
@@ -24,13 +25,17 @@ export default async function NoteDetail({
   const id = Number(idStr);
   if (!Number.isInteger(id)) notFound();
 
-  const [n] = await db.select().from(notes).where(eq(notes.id, id));
+  const uid = await requireUserId();
+  const [n] = await db
+    .select()
+    .from(notes)
+    .where(and(eq(notes.id, id), eq(notes.userId, uid)));
   if (!n) notFound();
 
   const [areaList, goalList, prjList] = await Promise.all([
-    db.select().from(areas),
-    db.select().from(goals),
-    db.select().from(projects),
+    db.select().from(areas).where(eq(areas.userId, uid)),
+    db.select().from(goals).where(eq(goals.userId, uid)),
+    db.select().from(projects).where(eq(projects.userId, uid)),
   ]);
 
   return (

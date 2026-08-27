@@ -297,7 +297,7 @@ export default function GuidePage() {
           </div>
           <div>
             <b className="text-neutral-800">Q. 데이터는 어디에 저장되나요?</b>
-            <p>본인 전용 클라우드 DB(Neon)에 저장되며, Google 로그인({`허용된 계정 1개`})을 통과해야만 접근할 수 있습니다. 휴대폰·PC 어디서 접속해도 같은 데이터를 봅니다.</p>
+            <p>클라우드 DB에 계정별로 분리되어 저장됩니다. 본인 Google 계정으로 로그인해야만 본인 데이터에 접근할 수 있고, 휴대폰·PC 어디서 접속해도 같은 데이터를 봅니다.</p>
           </div>
         </Card>
       </section>

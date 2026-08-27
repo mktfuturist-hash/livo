@@ -1,12 +1,13 @@
+import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { authConfig, authEnabled } from "@/auth.config";
 
-// 인증이 설정된 환경(프로덕션)에서만 보호. 로컬(미설정)은 통과.
+// edge-safe 인스턴스 (DB 콜백 없음 — JWT 존재 여부만 확인)
+const { auth } = NextAuth(authConfig);
+
 export async function middleware(req: NextRequest) {
-  if (!process.env.AUTH_GOOGLE_ID || !process.env.AUTH_GOOGLE_SECRET) {
-    return NextResponse.next();
-  }
-  const { auth } = await import("@/auth");
+  if (!authEnabled) return NextResponse.next();
   const session = await auth();
   if (!session && !req.nextUrl.pathname.startsWith("/api/auth")) {
     return NextResponse.redirect(new URL("/api/auth/signin", req.nextUrl.origin));

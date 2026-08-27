@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { asc, inArray, sql } from "drizzle-orm";
+import { asc, eq, inArray, sql } from "drizzle-orm";
 import { db, projects, tasks, areas, goals } from "@/db";
 import { createProject } from "@/lib/actions";
+import { requireUserId } from "@/lib/session";
 import { ddayLabel, fmtDate, todayStr } from "@/lib/dates";
 import { Card, DdayBadge, Empty, ProgressBar, SectionTitle } from "@/components/ui";
 
@@ -15,10 +16,11 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default async function ProjectsPage() {
+  const uid = await requireUserId();
   const [prjs, areaList, goalList] = await Promise.all([
-    db.select().from(projects).orderBy(asc(projects.startDate), asc(projects.id)),
-    db.select().from(areas),
-    db.select().from(goals),
+    db.select().from(projects).where(eq(projects.userId, uid)).orderBy(asc(projects.startDate), asc(projects.id)),
+    db.select().from(areas).where(eq(areas.userId, uid)),
+    db.select().from(goals).where(eq(goals.userId, uid)),
   ]);
   const taskStats: { projectId: number | null; total: number; done: number }[] =
     prjs.length

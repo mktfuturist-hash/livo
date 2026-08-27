@@ -2,6 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logout } from "@/lib/actions";
+
+export type SidebarUser = {
+  name: string | null;
+  email: string | null;
+  image: string | null;
+} | null;
 
 const NAV = [
   { href: "/", label: "홈", icon: "🏠" },
@@ -15,13 +22,13 @@ const NAV = [
   { href: "/areas", label: "영역", icon: "🗂️" },
 ];
 
-export function Sidebar() {
+export function Sidebar({ user }: { user: SidebarUser }) {
   const pathname = usePathname();
   return (
     <>
       {/* 데스크톱 사이드바 */}
       <aside className="hidden w-52 shrink-0 border-r border-neutral-200 bg-white md:block">
-        <div className="sticky top-0 p-4">
+        <div className="sticky top-0 flex h-screen flex-col p-4">
           <Link href="/" className="mb-6 block px-2 text-lg font-bold tracking-tight">
             Livo
           </Link>
@@ -47,6 +54,35 @@ export function Sidebar() {
               );
             })}
           </nav>
+          <div className="mt-auto border-t border-neutral-100 pt-3">
+            {user ? (
+              <div className="flex items-center gap-2 px-1">
+                {user.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={user.image}
+                    alt=""
+                    className="h-7 w-7 rounded-full"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-200 text-xs">
+                    {(user.name ?? user.email ?? "?").slice(0, 1)}
+                  </span>
+                )}
+                <span className="min-w-0 flex-1 truncate text-xs text-neutral-500">
+                  {user.name ?? user.email}
+                </span>
+                <form action={logout}>
+                  <button className="text-xs text-neutral-400 hover:text-neutral-700">
+                    로그아웃
+                  </button>
+                </form>
+              </div>
+            ) : (
+              <p className="px-1 text-xs text-neutral-300">로컬 모드</p>
+            )}
+          </div>
         </div>
       </aside>
 

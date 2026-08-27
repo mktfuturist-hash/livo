@@ -6,6 +6,7 @@ import {
 } from "@/lib/actions";
 import { todayStr, ddayLabel, fmtDate } from "@/lib/dates";
 import { Card, DdayBadge, Empty, SectionTitle } from "@/components/ui";
+import { requireUserId } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
@@ -27,8 +28,9 @@ export default async function TasksPage({
     ? String(sp.view)
     : "today") as ViewKey;
   const today = todayStr();
+  const uid = await requireUserId();
 
-  const prjs = await db.select().from(projects);
+  const prjs = await db.select().from(projects).where(eq(projects.userId, uid));
 
   let list;
   if (view === "today") {
@@ -36,27 +38,27 @@ export default async function TasksPage({
     list = await db
       .select()
       .from(tasks)
-      .where(and(eq(tasks.done, false)))
+      .where(and(eq(tasks.userId, uid), eq(tasks.done, false)))
       .orderBy(asc(tasks.dueDate), asc(tasks.id));
     list = list.filter((t) => t.dueDate && t.dueDate <= today);
   } else if (view === "upcoming") {
     list = await db
       .select()
       .from(tasks)
-      .where(and(eq(tasks.done, false), gt(tasks.dueDate, today)))
+      .where(and(eq(tasks.userId, uid), eq(tasks.done, false), gt(tasks.dueDate, today)))
       .orderBy(asc(tasks.dueDate), asc(tasks.id));
   } else if (view === "inbox") {
     // 갓생 OS 정의: 프로젝트 없음 AND 기한 없음
     list = await db
       .select()
       .from(tasks)
-      .where(and(eq(tasks.done, false), isNull(tasks.projectId), isNull(tasks.dueDate)))
+      .where(and(eq(tasks.userId, uid), eq(tasks.done, false), isNull(tasks.projectId), isNull(tasks.dueDate)))
       .orderBy(desc(tasks.id));
   } else {
     list = await db
       .select()
       .from(tasks)
-      .where(eq(tasks.done, true))
+      .where(and(eq(tasks.userId, uid), eq(tasks.done, true)))
       .orderBy(desc(tasks.doneAt))
       .limit(100);
   }

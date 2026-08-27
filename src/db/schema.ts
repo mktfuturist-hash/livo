@@ -10,9 +10,21 @@ import {
   bigint,
 } from "drizzle-orm/pg-core";
 
-// ── 영역: 최상위 카테고리. pillar = 일/삶/돈 3기둥 ──
+// ── 사용자: 구글 로그인 = 회원가입. 모든 데이터는 user_id로 격리 ──
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  name: text("name"),
+  image: text("image"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// ── 영역: 최상위 카테고리. pillar = Work/Life/Money 3기둥 ──
 export const areas = pgTable("areas", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   name: text("name").notNull(),
   icon: text("icon"),
   pillar: text("pillar", { enum: ["work", "life", "money"] })
@@ -26,6 +38,9 @@ export const areas = pgTable("areas", {
 // ── 목표: metric_* 컬럼이 자동 진척률 엔진 ──
 export const goals = pgTable("goals", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   areaId: integer("area_id").references(() => areas.id),
   title: text("title").notNull(),
   description: text("description"),
@@ -46,6 +61,9 @@ export const goals = pgTable("goals", {
 
 export const milestones = pgTable("milestones", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   goalId: integer("goal_id")
     .notNull()
     .references(() => goals.id, { onDelete: "cascade" }),
@@ -57,6 +75,9 @@ export const milestones = pgTable("milestones", {
 
 export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   areaId: integer("area_id").references(() => areas.id),
   goalId: integer("goal_id").references(() => goals.id),
   title: text("title").notNull(),
@@ -73,6 +94,9 @@ export const projects = pgTable("projects", {
 // 인박스 = projectId IS NULL AND dueDate IS NULL
 export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   projectId: integer("project_id").references(() => projects.id, {
     onDelete: "set null",
   }),
@@ -87,6 +111,9 @@ export const tasks = pgTable("tasks", {
 
 export const kpis = pgTable("kpis", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   projectId: integer("project_id")
     .notNull()
     .references(() => projects.id, { onDelete: "cascade" }),
@@ -98,6 +125,9 @@ export const kpis = pgTable("kpis", {
 
 export const routines = pgTable("routines", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   goalId: integer("goal_id").references(() => goals.id),
   areaId: integer("area_id").references(() => areas.id),
   title: text("title").notNull(),
@@ -110,6 +140,9 @@ export const routines = pgTable("routines", {
 // 루틴 원터치 기록 — 클릭 시각 자동 저장
 export const routineLogs = pgTable("routine_logs", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   routineId: integer("routine_id")
     .notNull()
     .references(() => routines.id, { onDelete: "cascade" }),
@@ -118,6 +151,9 @@ export const routineLogs = pgTable("routine_logs", {
 
 export const notes = pgTable("notes", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   areaId: integer("area_id").references(() => areas.id),
   goalId: integer("goal_id").references(() => goals.id),
   projectId: integer("project_id").references(() => projects.id),
@@ -136,6 +172,9 @@ export const notes = pgTable("notes", {
 
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   scope: text("scope", { enum: ["daily", "weekly", "monthly"] }).notNull(),
   date: date("date").notNull(),
   planMd: text("plan_md"),
@@ -145,6 +184,9 @@ export const reviews = pgTable("reviews", {
 // ── 돈: 자산 계좌(수기 잔액) + 월별 스냅샷 + 일일가계부 ──
 export const moneyAccounts = pgTable("money_accounts", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   type: text("type", {
     enum: ["savings", "invest", "realestate", "loan", "pension"],
   }).notNull(),
@@ -155,6 +197,9 @@ export const moneyAccounts = pgTable("money_accounts", {
 
 export const moneySnapshots = pgTable("money_snapshots", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   accountId: integer("account_id")
     .notNull()
     .references(() => moneyAccounts.id, { onDelete: "cascade" }),
@@ -164,6 +209,9 @@ export const moneySnapshots = pgTable("money_snapshots", {
 
 export const moneyTxns = pgTable("money_txns", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
   date: date("date").notNull(),
   amount: bigint("amount", { mode: "number" }).notNull(),
   direction: text("direction", { enum: ["income", "expense"] }).notNull(),
