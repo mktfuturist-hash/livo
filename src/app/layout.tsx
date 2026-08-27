@@ -3,9 +3,9 @@ import "./globals.css";
 import { Sidebar } from "@/components/sidebar";
 
 export const metadata: Metadata = {
-  title: "갓생 OS",
-  description: "일·삶·돈 세 기둥으로 목표와 진척을 한눈에 관리하는 개인 OS",
-  appleWebApp: { capable: true, title: "갓생 OS", statusBarStyle: "default" },
+  title: "Livo",
+  description: "Work·Life·Money 세 기둥으로 목표와 진척을 한눈에 관리하는 개인 OS",
+  appleWebApp: { capable: true, title: "Livo", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {

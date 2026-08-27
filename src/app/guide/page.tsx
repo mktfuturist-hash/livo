@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Card } from "@/components/ui";
 
-export const metadata = { title: "사용 설명서 — 갓생 OS" };
+export const metadata = { title: "사용 설명서 — Livo" };
 
 function Step({
   no,
@@ -76,9 +76,9 @@ export default function GuidePage() {
         <p className="text-sm text-neutral-400">
           <Link href="/" className="hover:text-neutral-600">← 대시보드로 돌아가기</Link>
         </p>
-        <h1 className="text-3xl font-bold">📖 갓생 OS 사용 설명서</h1>
+        <h1 className="text-3xl font-bold">📖 Livo 사용 설명서</h1>
         <p className="text-neutral-500">
-          갓생 OS는 <b className="text-blue-600">Work</b>·<b className="text-emerald-600">Life</b>·<b className="text-amber-600">Money</b> 세
+          Livo는 <b className="text-blue-600">Work</b>·<b className="text-emerald-600">Life</b>·<b className="text-amber-600">Money</b> 세
           기둥으로 인생의 목표를 정리하고, <b>달성 여부와 진척률이 자동으로 계산되는</b> 개인 관리
           시스템입니다. 5분만 투자해서 이 페이지를 읽고 시작하면, 각 화면에 무엇을 왜 입력해야
           하는지가 분명해집니다.

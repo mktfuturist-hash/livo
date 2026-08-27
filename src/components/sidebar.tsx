@@ -23,7 +23,7 @@ export function Sidebar() {
       <aside className="hidden w-52 shrink-0 border-r border-neutral-200 bg-white md:block">
         <div className="sticky top-0 p-4">
           <Link href="/" className="mb-6 block px-2 text-lg font-bold tracking-tight">
-            갓생 OS
+            Livo
           </Link>
           <nav className="space-y-0.5">
             {NAV.map((item) => {

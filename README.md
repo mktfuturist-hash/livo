@@ -1,6 +1,6 @@
-# 갓생 OS
+# Livo
 
-일 · 삶 · 돈 세 기둥으로 목표를 정리하고, 달성 여부와 진척을 한눈에 보는 1인용 인생 관리 웹앱.
+Live + OS. Work · Life · Money 세 기둥으로 목표를 정리하고, 달성 여부와 진척을 한눈에 보는 1인용 인생 관리 웹앱.
 
 저스트그로우 「갓생 노션 OS」의 관계형 엔진(영역 → 목표·마일스톤 → 프로젝트·할일 → 루틴 → 노트 → 계획/회고)에
 공여사들 「노션 템플릿 30종」의 WORK/LIFE/MONEY 3분할과 머니보드를 결합한 구조. 설계 문서: [docs/superpowers/specs](docs/superpowers/specs/2026-08-15-gotlife-os-design.md)
