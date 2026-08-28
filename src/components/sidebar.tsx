@@ -10,17 +10,26 @@ export type SidebarUser = {
   image: string | null;
 } | null;
 
-const NAV = [
+type NavItem = { href: string; label: string; icon: string; group?: boolean };
+
+const NAV: NavItem[] = [
   { href: "/", label: "홈", icon: "🏠" },
+  // 계층: 영역 > 목표 > 프로젝트 > 할 일 / 루틴
+  { href: "/areas", label: "영역", icon: "🗂️", group: true },
   { href: "/goals", label: "목표", icon: "🎯" },
   { href: "/projects", label: "프로젝트", icon: "📁" },
   { href: "/tasks", label: "할 일", icon: "✅" },
   { href: "/routines", label: "루틴", icon: "🔁" },
-  { href: "/notes", label: "노트", icon: "📝" },
+  // 기록·관리
+  { href: "/notes", label: "노트", icon: "📝", group: true },
   { href: "/reviews", label: "계획·회고", icon: "🪞" },
   { href: "/money", label: "머니", icon: "💰" },
-  { href: "/areas", label: "영역", icon: "🗂️" },
 ];
+
+const MOBILE_TABS = ["/", "/tasks", "/routines", "/money"];
+const mobileNav = MOBILE_TABS.map(
+  (href) => NAV.find((item) => item.href === href)!,
+);
 
 export function Sidebar({ user }: { user: SidebarUser }) {
   const pathname = usePathname();
@@ -39,18 +48,22 @@ export function Sidebar({ user }: { user: SidebarUser }) {
                   ? pathname === "/"
                   : pathname.startsWith(item.href);
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm ${
-                    active
-                      ? "bg-neutral-900 font-medium text-white"
-                      : "text-neutral-600 hover:bg-neutral-100"
-                  }`}
-                >
-                  <span className="text-base">{item.icon}</span>
-                  {item.label}
-                </Link>
+                <div key={item.href}>
+                  {item.group && (
+                    <div className="my-2 border-t border-neutral-100" />
+                  )}
+                  <Link
+                    href={item.href}
+                    className={`flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm ${
+                      active
+                        ? "bg-neutral-900 font-medium text-white"
+                        : "text-neutral-600 hover:bg-neutral-100"
+                    }`}
+                  >
+                    <span className="text-base">{item.icon}</span>
+                    {item.label}
+                  </Link>
+                </div>
               );
             })}
           </nav>
@@ -88,7 +101,7 @@ export function Sidebar({ user }: { user: SidebarUser }) {
 
       {/* 모바일 하단 탭바: 홈·할일·루틴·가계부 */}
       <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-neutral-200 bg-white/95 backdrop-blur md:hidden">
-        {[NAV[0], NAV[3], NAV[4], NAV[7]].map((item) => {
+        {mobileNav.map((item) => {
           const active =
             item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           return (
