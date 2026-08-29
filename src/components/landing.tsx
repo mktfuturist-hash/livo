@@ -110,7 +110,7 @@ export function Landing() {
           멈추지 않는 올해
         </h1>
         <p className="text-lg font-semibold text-neutral-500">
-          남은 4달, 90일 루틴 챌린지
+          남은 4달, 100일 루틴 챌린지
         </p>
         <p className="text-sm italic text-neutral-400">
           WID — &ldquo;What I Do makes me Wiser.&rdquo;
@@ -156,7 +156,7 @@ export function Landing() {
         </div>
       </section>
 
-      {/* 7. 90일 계산 */}
+      {/* 7. 100일 계산 */}
       <section className="rounded-xl border border-neutral-200 bg-white p-6 text-center shadow-sm">
         <h2 className="text-xl font-bold">지금 시작하면, 올해 안에 결과를 봅니다</h2>
         <div className="mx-auto mt-4 flex max-w-md items-center justify-between text-sm">
@@ -166,12 +166,12 @@ export function Landing() {
           </div>
           <div className="h-px flex-1 bg-neutral-200" />
           <div className="px-2">
-            <div className="text-lg font-bold text-emerald-600">90일</div>
+            <div className="text-lg font-bold text-emerald-600">100일</div>
             <div className="text-xs text-neutral-400">루틴 실행</div>
           </div>
           <div className="h-px flex-1 bg-neutral-200" />
           <div>
-            <div className="text-lg font-bold">12월 초</div>
+            <div className="text-lg font-bold">12월 중순</div>
             <div className="text-xs text-neutral-400">올해 목표 완주</div>
           </div>
         </div>
