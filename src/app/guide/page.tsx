@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Card } from "@/components/ui";
 
-export const metadata = { title: "사용 설명서 — Livo" };
+export const metadata = { title: "사용 설명서 — WID" };
 
 function Step({
   no,
@@ -76,9 +76,9 @@ export default function GuidePage() {
         <p className="text-sm text-neutral-400">
           <Link href="/" className="hover:text-neutral-600">← 대시보드로 돌아가기</Link>
         </p>
-        <h1 className="text-3xl font-bold">📖 Livo 사용 설명서</h1>
+        <h1 className="text-3xl font-bold">📖 WID 사용 설명서</h1>
         <p className="text-neutral-500">
-          Livo는 <b className="text-blue-600">Work</b>·<b className="text-emerald-600">Life</b>·<b className="text-amber-600">Money</b> 세
+          WID는 <b className="text-work-ink">Work</b>·<b className="text-life-ink">Life</b>·<b className="text-money-ink">Money</b> 세
           기둥으로 인생의 목표를 정리하고, <b>달성 여부와 진척률이 자동으로 계산되는</b> 개인 관리
           시스템입니다. 5분만 투자해서 이 페이지를 읽고 시작하면, 각 화면에 무엇을 왜 입력해야
           하는지가 분명해집니다.
@@ -166,7 +166,7 @@ export default function GuidePage() {
         <div className="space-y-3">
           <Step no={1} title="영역 만들기 — 내 인생의 지도 그리기" href="/areas" cta="영역 입력하러 가기">
             <p>
-              인생을 구성하는 큰 카테고리를 3~7개 만듭니다. 각 영역은 <b className="text-blue-600">Work</b>·<b className="text-emerald-600">Life</b>·<b className="text-amber-600">Money</b> 중
+              인생을 구성하는 큰 카테고리를 3~7개 만듭니다. 각 영역은 <b className="text-work-ink">Work</b>·<b className="text-life-ink">Life</b>·<b className="text-money-ink">Money</b> 중
               한 기둥에 소속시킵니다.
             </p>
             <p className="rounded-lg bg-neutral-50 p-2.5 text-xs">

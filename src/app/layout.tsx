@@ -4,13 +4,14 @@ import { Sidebar } from "@/components/sidebar";
 import { currentUser } from "@/lib/session";
 
 export const metadata: Metadata = {
-  title: "Livo",
-  description: "Work·Life·Money 세 기둥으로 목표와 진척을 한눈에 관리하는 개인 OS",
-  appleWebApp: { capable: true, title: "Livo", statusBarStyle: "default" },
+  title: "WID",
+  description:
+    "What I Do makes me Wiser. — 오늘 입력한 행동이 모여 내일의 나를 더 현명하게. Work·Life·Money 세 기둥 목표관리",
+  appleWebApp: { capable: true, title: "WID", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#171717",
+  themeColor: "#3B6896",
   width: "device-width",
   initialScale: 1,
 };

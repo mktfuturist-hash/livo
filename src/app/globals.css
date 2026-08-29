@@ -1,5 +1,39 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────
+   WID 브랜드 토큰
+   "What I Do makes me Wiser."
+
+   Squash 팔레트(일·삶·돈)의 원본 hex는 채도가 높아 흰 배경에서
+   본문 대비가 2.6~2.9에 그친다 → 원본은 채움(bar·dot)에만 쓰고,
+   글자에는 같은 색상(hue)을 어둡게 내린 -ink 를 쓴다.
+   -ink 는 흰 배경과 -tint 배경 양쪽에서 WCAG AA(4.5) 통과.
+   ───────────────────────────────────────────────────────── */
+@theme {
+  /* Work — 일 */
+  --color-work: #009efa;
+  --color-work-ink: #0075b9;
+  --color-work-tint: #e8f7ff;
+  --color-work-line: #b8e5ff;
+
+  /* Life — 삶 */
+  --color-life: #f76f3e;
+  --color-life-ink: #c93b08;
+  --color-life-tint: #feefe9;
+  --color-life-line: #fcccba;
+
+  /* Money — 돈 */
+  --color-money: #00b59e;
+  --color-money-ink: #008271;
+  --color-money-tint: #e8fffc;
+  --color-money-line: #b8fff6;
+
+  /* Spot 팔레트 — 사이드바·공용 UI */
+  --color-brand: #009efa;
+  --color-brand-deep: #3b6896;
+  --color-brand-mist: #daf3ff;
+}
+
 body {
   font-family:
     -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo",

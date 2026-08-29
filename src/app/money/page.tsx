@@ -118,7 +118,7 @@ export default async function MoneyPage() {
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Card>
           <div className="text-xs text-neutral-400">순자산</div>
-          <div className="mt-1 text-xl font-bold tabular-nums text-amber-600">{krw(netWorth)}</div>
+          <div className="mt-1 text-xl font-bold tabular-nums text-money-ink">{krw(netWorth)}</div>
           <div className="mt-0.5 text-xs text-neutral-400">
             자산 {krw(assets)} − 부채 {krw(debts)}
           </div>

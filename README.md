@@ -1,6 +1,11 @@
-# Livo
+# WID
 
-Live + OS. Work · Life · Money 세 기둥으로 목표를 정리하고, 달성 여부와 진척을 한눈에 보는 1인용 인생 관리 웹앱.
+> **What I Do makes me Wiser.**
+> 내가 오늘 입력한 행동(What I Do)이 모여, 내일의 나를 더 현명하게(Wiser) 만듭니다.
+
+Work · Life · Money 세 기둥으로 목표를 정리하고, 달성 여부와 진척을 한눈에 보는 목표관리 웹앱.
+큰 목표를 오늘의 할 일까지 쪼개주고, 반대로 오늘 체크한 할 일·루틴·계좌 잔액이 목표 진척률로 자동으로 굴러 올라갑니다.
+사용자는 **와이저(Wiser)** 라고 부릅니다.
 
 저스트그로우 「갓생 노션 OS」의 관계형 엔진(영역 → 목표·마일스톤 → 프로젝트·할일 → 루틴 → 노트 → 계획/회고)에
 공여사들 「노션 템플릿 30종」의 WORK/LIFE/MONEY 3분할과 머니보드를 결합한 구조. 설계 문서: [docs/superpowers/specs](docs/superpowers/specs/2026-08-15-gotlife-os-design.md)
