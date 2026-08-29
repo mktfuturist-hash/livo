@@ -5,6 +5,8 @@ import { getGoalsWithProgress } from "@/lib/progress";
 import { createTask, toggleTask, logRoutine, unlogRoutineToday } from "@/lib/actions";
 import { computeRoutineStats } from "@/lib/routine-stats";
 import { requireUserId } from "@/lib/session";
+import { auth, authEnabled } from "@/auth";
+import { Landing } from "@/components/landing";
 import { todayStr, ddayLabel, fmtDate } from "@/lib/dates";
 import {
   Card, DdayBadge, Empty, PILLARS, ProgressBar, SectionTitle, type Pillar,
@@ -13,6 +15,10 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  // 비로그인 방문자에게는 랜딩을, 로그인 사용자에게는 대시보드를
+  if (authEnabled && !(await auth())) {
+    return <Landing />;
+  }
   const today = todayStr();
   const uid = await requireUserId();
   const [gs, areaList, openTasks, activeRoutines] = await Promise.all([

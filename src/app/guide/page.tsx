@@ -78,7 +78,7 @@ export default function GuidePage() {
         </p>
         <h1 className="text-3xl font-bold">📖 WID 사용 설명서</h1>
         <p className="text-neutral-500">
-          WID는 <b className="text-work-ink">Work</b>·<b className="text-life-ink">Life</b>·<b className="text-money-ink">Money</b> 세
+          WID(What I Do)는 <b className="text-work-ink">Work</b>·<b className="text-life-ink">Life</b>·<b className="text-money-ink">Money</b> 세
           기둥으로 인생의 목표를 정리하고, <b>달성 여부와 진척률이 자동으로 계산되는</b> 개인 관리
           시스템입니다. 5분만 투자해서 이 페이지를 읽고 시작하면, 각 화면에 무엇을 왜 입력해야
           하는지가 분명해집니다.
