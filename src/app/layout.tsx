@@ -5,9 +5,9 @@ import { currentUser } from "@/lib/session";
 import { authEnabled } from "@/auth.config";
 
 export const metadata: Metadata = {
-  title: "Livo",
+  title: "WID — 라이프 플래너",
   description: "Work·Life·Money 세 기둥으로 목표와 진척을 한눈에 관리하는 개인 OS",
-  appleWebApp: { capable: true, title: "Livo", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "WID", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
