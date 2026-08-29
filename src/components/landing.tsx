@@ -206,9 +206,12 @@ export function Landing() {
             구글로 로그인
           </a>
         </p>
-        <p className="mt-2">
+        <p className="mt-2 space-x-3">
           <Link href="/guide" className="underline hover:text-neutral-600">
             사용 설명서 미리 보기
+          </Link>
+          <Link href="/privacy" className="underline hover:text-neutral-600">
+            개인정보처리방침
           </Link>
         </p>
       </footer>
