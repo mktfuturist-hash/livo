@@ -112,13 +112,16 @@ export function Landing() {
         <p className="text-lg font-semibold text-neutral-500">
           남은 4달, 90일 루틴 챌린지
         </p>
+        <p className="text-sm italic text-neutral-400">
+          WID — &ldquo;What I Do makes me Wiser.&rdquo;
+        </p>
         <div className="mx-auto max-w-lg space-y-1.5 text-[15px] leading-relaxed text-neutral-600">
           <p>매일 강의만 듣고 목표만 세우다 한 해가 끝나지는 않으셨나요?</p>
           <p>문제는 목표를 루틴화하지 못했기 때문이에요.</p>
           <p>
             <b className="text-neutral-900">목표를 구조화하고, 할 일을 설정하고, 루틴화하세요.</b>
           </p>
-          <p>Livo와 함께면 올해의 목표를 달성할 수 있어요.</p>
+          <p>WID와 함께면 올해의 목표를 달성할 수 있어요.</p>
         </div>
         {/* 4. CTA ① */}
         <Cta closed={closed} />
@@ -139,7 +142,7 @@ export function Landing() {
       <section className="space-y-4">
         <h2 className="text-center text-2xl font-bold">작은 루틴, 큰 성공</h2>
         <p className="text-center text-sm text-neutral-500">
-          인생의 세 기둥을 한 화면에서 — Livo는 일·삶·돈을 함께 관리하는 목표 실행 OS입니다
+          인생의 세 기둥을 한 화면에서 — WID는 일·삶·돈을 함께 관리하는 라이프 플래너입니다
         </p>
         <div className="grid gap-3 sm:grid-cols-3">
           {PILLAR_INTRO.map(({ pillar, title, desc }) => (
@@ -183,7 +186,7 @@ export function Landing() {
         <p className="mx-auto max-w-lg text-[15px] leading-relaxed text-neutral-600">
           함께 목표를 향해 달렸던 동기님들께 가장 먼저 열어드려요.
           <br />
-          <b className="text-neutral-900">첫 30명의 피드백이 Livo의 다음 버전을 만듭니다.</b>
+          <b className="text-neutral-900">첫 30명의 와이저(Wiser)가 남긴 피드백이 WID의 다음 버전을 만듭니다.</b>
         </p>
         <p className="text-sm text-neutral-400">
           자격은 하나 — <b className="text-neutral-600">올해 이루고 싶은 목표가 하나라도 있는 분</b>

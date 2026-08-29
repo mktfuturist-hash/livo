@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Livo",
-    short_name: "Livo",
+    name: "WID — 라이프 플래너",
+    short_name: "WID",
     description: "Work·Life·Money 세 기둥으로 목표와 진척을 한눈에",
     start_url: "/",
     display: "standalone",

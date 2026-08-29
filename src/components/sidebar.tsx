@@ -30,7 +30,7 @@ export function Sidebar({ user }: { user: SidebarUser }) {
       <aside className="hidden w-52 shrink-0 border-r border-neutral-200 bg-white md:block">
         <div className="sticky top-0 flex h-screen flex-col p-4">
           <Link href="/" className="mb-6 block px-2 text-lg font-bold tracking-tight">
-            Livo
+            WID
           </Link>
           <nav className="space-y-0.5">
             {NAV.map((item) => {
