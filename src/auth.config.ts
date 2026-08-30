@@ -11,5 +11,6 @@ export const authConfig: NextAuthConfig = {
   secret: process.env.AUTH_SECRET ?? "dev-only-secret",
   trustHost: true,
   session: { strategy: "jwt" },
+  pages: { signIn: "/login" }, // 커스텀 로그인 화면 (로고+키카피+GIS)
   providers: authEnabled ? [Google] : [],
 };

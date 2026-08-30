@@ -1,11 +1,44 @@
 import NextAuth from "next-auth";
-import { authConfig } from "./auth.config";
+import Credentials from "next-auth/providers/credentials";
+import { createRemoteJWKSet, jwtVerify } from "jose";
+import { authConfig, authEnabled } from "./auth.config";
 
 export { authEnabled } from "./auth.config";
+
+// GIS(Google Identity Services) 버튼이 돌려준 ID 토큰을 구글 공개키로 검증한다.
+// 리다이렉트 OAuth와 별개 경로지만, 검증 후에는 아래 jwt 콜백의 upsert를 그대로 탄다.
+const GOOGLE_JWKS = createRemoteJWKSet(
+  new URL("https://www.googleapis.com/oauth2/v3/certs")
+);
+
+const gisProvider = Credentials({
+  id: "google-gis",
+  name: "Google (GIS)",
+  credentials: { credential: {} },
+  async authorize(credentials) {
+    const idToken = credentials?.credential;
+    if (typeof idToken !== "string" || !idToken) return null;
+    try {
+      const { payload } = await jwtVerify(idToken, GOOGLE_JWKS, {
+        issuer: ["https://accounts.google.com", "accounts.google.com"],
+        audience: process.env.AUTH_GOOGLE_ID,
+      });
+      if (!payload.email || payload.email_verified !== true) return null;
+      return {
+        email: payload.email as string,
+        name: (payload.name as string | undefined) ?? null,
+        image: (payload.picture as string | undefined) ?? null,
+      };
+    } catch {
+      return null; // 서명·aud·만료 불일치 → 로그인 거부
+    }
+  },
+});
 
 // 구글 로그인 = 회원가입. 첫 로그인 시 users에 upsert하고 내부 id를 JWT에 심는다.
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  providers: authEnabled ? [...authConfig.providers, gisProvider] : [],
   callbacks: {
     async jwt({ token, user }) {
       const email = user?.email ?? (token.email as string | undefined);

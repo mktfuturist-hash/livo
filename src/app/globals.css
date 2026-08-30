@@ -32,12 +32,30 @@
   --color-brand: #009efa;
   --color-brand-deep: #3b6896;
   --color-brand-mist: #daf3ff;
+
+  /* 다크 네이비 — 사이드바(슬랙식). 앱 아이콘 네이비 계열 */
+  --color-navy: #0e2a54;
+  --color-navy-soft: #1b3d6e;
+  --color-navy-text: #c9d8ee;
+  --color-navy-faint: #7e97bd;
+}
+
+html {
+  /* full-bleed 밴드(랜딩)의 100vw가 스크롤바 폭만큼 삐져나오는 것 방지.
+     루트 요소의 overflow는 뷰포트로 전파되고 overflow-y는 auto로 계산돼 세로 스크롤은 정상.
+     (body에 clip을 주면 overflow-y까지 clip으로 계산돼 첫 화면 아래가 페인트되지 않는다) */
+  overflow-x: hidden;
 }
 
 body {
   font-family:
     -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo",
     "Malgun Gothic", "Segoe UI", sans-serif;
+}
+
+/* 가운데 정렬 컨테이너(max-w) 안에서 뷰포트 전체 폭으로 탈출하는 밴드 */
+.full-bleed {
+  margin-inline: calc(50% - 50vw);
 }
 
 input,

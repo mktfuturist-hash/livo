@@ -6,8 +6,8 @@ import { authConfig, authEnabled } from "@/auth.config";
 // edge-safe 인스턴스 (DB 콜백 없음 — JWT 존재 여부만 확인)
 const { auth } = NextAuth(authConfig);
 
-// 비로그인에게도 열리는 경로 (랜딩·사용 설명서)
-const PUBLIC_PATHS = ["/", "/landing", "/guide", "/privacy"];
+// 비로그인에게도 열리는 경로 (랜딩·사용 설명서·로그인)
+const PUBLIC_PATHS = ["/", "/landing", "/guide", "/privacy", "/login"];
 
 export async function middleware(req: NextRequest) {
   if (!authEnabled) return NextResponse.next();
@@ -17,7 +17,7 @@ export async function middleware(req: NextRequest) {
   }
   const session = await auth();
   if (!session) {
-    return NextResponse.redirect(new URL("/api/auth/signin", req.nextUrl.origin));
+    return NextResponse.redirect(new URL("/login", req.nextUrl.origin));
   }
   return NextResponse.next();
 }

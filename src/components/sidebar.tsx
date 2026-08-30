@@ -33,14 +33,16 @@ const mobileNav = MOBILE_TABS.map(
 
 export function Sidebar({ user }: { user: SidebarUser }) {
   const pathname = usePathname();
+  // 랜딩·로그인은 풀페이지(full-bleed) 라우트 — 앱 셸 없이 그린다
+  if (pathname === "/landing" || pathname === "/login") return null;
   return (
     <>
-      {/* 데스크톱 사이드바 */}
-      <aside className="hidden w-52 shrink-0 border-r border-neutral-200 bg-white md:block">
+      {/* 데스크톱 사이드바 — 슬랙식 다크 네이비 */}
+      <aside className="hidden w-52 shrink-0 bg-navy md:block">
         <div className="sticky top-0 flex h-screen flex-col p-4">
           <Link href="/" className="mb-6 block px-2">
-            <span className="text-lg font-bold tracking-tight text-brand-deep">WID</span>
-            <span className="mt-0.5 block text-[10px] leading-tight text-neutral-400">
+            <span className="text-lg font-bold tracking-tight text-white">WID</span>
+            <span className="mt-0.5 block text-[10px] leading-tight text-navy-faint">
               What I Do makes me Wiser.
             </span>
           </Link>
@@ -53,16 +55,19 @@ export function Sidebar({ user }: { user: SidebarUser }) {
               return (
                 <div key={item.href}>
                   {item.group && (
-                    <div className="my-2 border-t border-neutral-100" />
+                    <div className="my-2 border-t border-navy-soft" />
                   )}
                   <Link
                     href={item.href}
-                    className={`flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm ${
+                    className={`relative flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-colors ${
                       active
-                        ? "bg-brand-deep font-medium text-white"
-                        : "text-brand-deep hover:bg-brand-mist"
+                        ? "bg-navy-soft font-medium text-white"
+                        : "text-navy-text hover:bg-navy-soft/60 hover:text-white"
                     }`}
                   >
+                    {active && (
+                      <span className="absolute inset-y-1 left-0 w-0.5 rounded-full bg-brand" />
+                    )}
                     <span className="text-base">{item.icon}</span>
                     {item.label}
                   </Link>
@@ -70,7 +75,7 @@ export function Sidebar({ user }: { user: SidebarUser }) {
               );
             })}
           </nav>
-          <div className="mt-auto border-t border-neutral-100 pt-3">
+          <div className="mt-auto border-t border-navy-soft pt-3">
             {user ? (
               <div className="flex items-center gap-2 px-1">
                 {user.image ? (
@@ -82,21 +87,21 @@ export function Sidebar({ user }: { user: SidebarUser }) {
                     referrerPolicy="no-referrer"
                   />
                 ) : (
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-200 text-xs">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-navy-soft text-xs text-white">
                     {(user.name ?? user.email ?? "?").slice(0, 1)}
                   </span>
                 )}
-                <span className="min-w-0 flex-1 truncate text-xs text-neutral-500">
+                <span className="min-w-0 flex-1 truncate text-xs text-navy-text">
                   {user.name ?? user.email}
                 </span>
                 <form action={logout}>
-                  <button className="text-xs text-neutral-400 hover:text-neutral-700">
+                  <button className="text-xs text-navy-faint hover:text-white">
                     로그아웃
                   </button>
                 </form>
               </div>
             ) : (
-              <p className="px-1 text-xs text-neutral-300">로컬 모드</p>
+              <p className="px-1 text-xs text-navy-faint">로컬 모드</p>
             )}
           </div>
         </div>

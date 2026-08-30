@@ -7,7 +7,7 @@ export async function requireUserId(): Promise<number> {
   if (!authEnabled) return getDevUserId();
   const session = await auth();
   const uid = (session as unknown as { uid?: number } | null)?.uid;
-  if (!uid) redirect("/api/auth/signin");
+  if (!uid) redirect("/login");
   return uid;
 }
 
