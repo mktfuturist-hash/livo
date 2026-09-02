@@ -35,11 +35,26 @@ const gisProvider = Credentials({
   },
 });
 
+// ALLOWED_EMAIL 화이트리스트 — 쉼표 구분, 대소문자 무시. 비어 있으면 전원 허용.
+const allowedEmails = (process.env.ALLOWED_EMAIL ?? "")
+  .split(",")
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
+
+function isAllowedEmail(email: string | null | undefined): boolean {
+  if (allowedEmails.length === 0) return true;
+  return !!email && allowedEmails.includes(email.toLowerCase());
+}
+
 // 구글 로그인 = 회원가입. 첫 로그인 시 users에 upsert하고 내부 id를 JWT에 심는다.
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: authEnabled ? [...authConfig.providers, gisProvider] : [],
   callbacks: {
+    // 리다이렉트 OAuth·GIS 두 경로 모두 여기를 거친다. 차단 시 /login?error=AccessDenied
+    signIn({ user }) {
+      return isAllowedEmail(user?.email);
+    },
     async jwt({ token, user }) {
       const email = user?.email ?? (token.email as string | undefined);
       if (!token.uid && email) {

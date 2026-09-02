@@ -55,9 +55,11 @@ declare global {
 export function LoginCard({
   authEnabled,
   googleClientId,
+  loginError,
 }: {
   authEnabled: boolean;
   googleClientId: string | null;
+  loginError?: string | null;
 }) {
   // SSR에서는 "ok"로 그리고, 클라이언트에서 UA로 확정 (hydration-safe)
   const browser = useSyncExternalStore(
@@ -150,6 +152,15 @@ export function LoginCard({
           </p>
           <p className="text-sm text-neutral-500">구글 계정으로 로그인해 주세요!</p>
         </div>
+
+        {/* 로그인 실패 안내 */}
+        {loginError && (
+          <p className="rounded-xl bg-red-50 px-4 py-3 text-sm leading-relaxed text-red-600">
+            {loginError === "AccessDenied"
+              ? "이 서비스는 현재 허용된 계정만 이용할 수 있어요. 이용을 원하시면 운영자에게 문의해 주세요."
+              : "로그인에 실패했어요. 잠시 후 다시 시도해 주세요."}
+          </p>
+        )}
 
         {/* 로그인 수단 */}
         {browser === "kakao" ? (
