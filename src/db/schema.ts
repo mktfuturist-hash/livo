@@ -16,6 +16,9 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   name: text("name"),
   image: text("image"),
+  // 개인정보 수집·이용 동의 입증용 — 최초 가입 시 기록
+  privacyAgreedAt: timestamp("privacy_agreed_at"),
+  privacyPolicyVersion: text("privacy_policy_version"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

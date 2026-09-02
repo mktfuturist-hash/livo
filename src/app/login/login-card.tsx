@@ -207,13 +207,21 @@ export function LoginCard({
           </div>
         )}
 
-        <p className="text-xs leading-relaxed text-neutral-400">
-          로그인하면{" "}
-          <Link href="/privacy" className="underline hover:text-neutral-600">
-            개인정보처리방침
-          </Link>
-          에 동의한 것으로 봐요.
-        </p>
+        <div className="space-y-1.5 text-left text-xs leading-relaxed text-neutral-400">
+          <p>구글로 로그인하면 아래 개인정보 수집·이용에 동의한 것으로 봅니다.</p>
+          <ul className="list-disc pl-4">
+            <li>항목: 이메일 주소, 이름, 프로필 사진 (구글 계정에서 제공)</li>
+            <li>목적: 회원 식별 및 로그인, 사용자별 데이터 분리</li>
+            <li>보유 기간: 회원 탈퇴(삭제 요청) 시까지</li>
+          </ul>
+          <p>
+            동의를 거부할 수 있으며, 거부 시 로그인이 필요한 기능을 이용할 수
+            없습니다.{" "}
+            <Link href="/privacy" className="underline hover:text-neutral-600">
+              개인정보처리방침 전문 보기
+            </Link>
+          </p>
+        </div>
       </div>
 
       <Link href="/landing" className="mt-6 text-sm text-brand-deep underline-offset-2 hover:underline">

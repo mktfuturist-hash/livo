@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const metadata = { title: "개인정보처리방침 — WID" };
 
-const EFFECTIVE = "2026년 9월 2일";
+const EFFECTIVE = "2026년 9월 3일";
 const FIRST_EFFECTIVE = "2026년 8월 29일";
 const CONTACT = "mktfuturist@gmail.com";
 const OFFICER = "최주희";
@@ -74,6 +74,7 @@ export default function PrivacyPage() {
                 "구글 계정 로그인(Google OAuth) 시 구글로부터 제공받음",
               ],
               ["자동 수집", "로그인 세션 쿠키", "로그인 상태 유지", "서비스 이용 과정에서 자동 생성"],
+              ["자동 수집", "접속 IP, 접속 기록", "서비스 운영 및 보안(호스팅 로그)", "서비스 이용 과정에서 자동 생성"],
             ]}
           />
           <p className="mt-2">
@@ -152,8 +153,10 @@ export default function PrivacyPage() {
             ]}
           />
           <p className="mt-2">
-            이전은 서비스 이용 시 네트워크를 통한 전송으로 이루어집니다. 이용자는 국외 이전을
-            거부할 수 있으며, 거부 시 서비스 이용이 제한될 수 있습니다.
+            위 이전은 정보주체와의 계약 체결·이행을 위한 개인정보 처리위탁·보관에
+            근거하며(「개인정보 보호법」 제28조의8에 따름), 서비스 이용 시 네트워크를 통한
+            전송으로 이루어집니다. 이용자는 국외 이전을 거부할 수 있으며, 거부 시 서비스
+            이용이 제한될 수 있습니다.
           </p>
         </Section>
 
