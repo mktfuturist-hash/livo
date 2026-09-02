@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { db, users } from "@/db";
 
 // 로그인 화면에 고지된 처리방침 시행일. 방침 개정 시 함께 올린다.
@@ -20,7 +21,13 @@ export async function upsertUser(
     })
     .onConflictDoUpdate({
       target: users.email,
-      set: { name: name ?? undefined, image: image ?? undefined },
+      set: {
+        name: name ?? undefined,
+        image: image ?? undefined,
+        // 동의 기록이 없는 기존 회원은 이번 로그인 시점으로 채우고, 이미 있으면 보존
+        privacyAgreedAt: sql`coalesce(${users.privacyAgreedAt}, excluded.privacy_agreed_at)`,
+        privacyPolicyVersion: sql`coalesce(${users.privacyPolicyVersion}, excluded.privacy_policy_version)`,
+      },
     })
     .returning({ id: users.id });
   return u.id;
