@@ -5,8 +5,7 @@ export const metadata = { title: "개인정보처리방침 — WID" };
 const EFFECTIVE = "2026년 9월 2일";
 const FIRST_EFFECTIVE = "2026년 8월 29일";
 const CONTACT = "mktfuturist@gmail.com";
-// ⚠️ 개인정보 보호책임자는 실명 기재 의무가 있습니다. 배포 전에 실명으로 바꿔주세요.
-const OFFICER = "운영자";
+const OFFICER = "최주희";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
