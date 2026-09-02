@@ -48,3 +48,7 @@ next-env.d.ts
 # 사업 문서(공개 저장소 제외)
 docs/Livo_GTM*
 docs/WORKLOG.md
+
+# 개인 기록(공개 저장소 제외)
+docs/STATUS.md
+docs/_증상색인.md
