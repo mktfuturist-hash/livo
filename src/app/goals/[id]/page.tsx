@@ -8,7 +8,7 @@ import {
 } from "@/lib/actions";
 import { getGoalsWithProgress } from "@/lib/progress";
 import { ddayLabel, fmtDate } from "@/lib/dates";
-import { Card, DdayBadge, Empty, ProgressBar, SectionTitle } from "@/components/ui";
+import { Card, DdayBadge, Empty, FieldLabel, ProgressBar, SectionTitle } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -107,9 +107,15 @@ export default async function GoalDetail({
             ))}
           </ul>
         )}
-        <form action={addMilestone.bind(null, g.id)} className="mt-3 flex gap-2 border-t border-neutral-100 pt-3">
-          <input name="title" placeholder="새 마일스톤" required className="flex-1" />
-          <input type="date" name="dueDate" />
+        <form action={addMilestone.bind(null, g.id)} className="mt-3 flex items-end gap-2 border-t border-neutral-100 pt-3">
+          <label className="flex-1">
+            <FieldLabel>마일스톤</FieldLabel>
+            <input name="title" placeholder="새 마일스톤" required className="w-full" />
+          </label>
+          <label>
+            <FieldLabel>기한</FieldLabel>
+            <input type="date" name="dueDate" />
+          </label>
           <button type="submit">추가</button>
         </form>
       </Card>

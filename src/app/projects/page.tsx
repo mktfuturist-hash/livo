@@ -4,7 +4,8 @@ import { db, projects, tasks, areas, goals } from "@/db";
 import { createProject } from "@/lib/actions";
 import { requireUserId } from "@/lib/session";
 import { ddayLabel, fmtDate, todayStr } from "@/lib/dates";
-import { Card, DdayBadge, Empty, ProgressBar, SectionTitle } from "@/components/ui";
+import { Card, DdayBadge, Empty, PILLARS, ProgressBar, SectionTitle } from "@/components/ui";
+import { NewProjectForm } from "./new-project-form";
 
 export const dynamic = "force-dynamic";
 
@@ -66,25 +67,11 @@ export default async function ProjectsPage() {
 
       <Card>
         <SectionTitle>새 프로젝트</SectionTitle>
-        <form action={createProject} className="flex flex-wrap items-end gap-2">
-          <input name="title" placeholder="프로젝트 (예: 해외 시장 진출)" required className="min-w-52 flex-1" />
-          <select name="areaId" defaultValue="">
-            <option value="">영역 없음</option>
-            {areaList.filter((a) => !a.archived).map((a) => (
-              <option key={a.id} value={a.id}>{a.icon} {a.name}</option>
-            ))}
-          </select>
-          <select name="goalId" defaultValue="">
-            <option value="">연결 목표 없음</option>
-            {goalList.filter((g) => g.status === "active").map((g) => (
-              <option key={g.id} value={g.id}>🎯 {g.title}</option>
-            ))}
-          </select>
-          <input type="date" name="startDate" title="시작일" />
-          <span className="pb-2 text-neutral-300">~</span>
-          <input type="date" name="endDate" title="종료일" />
-          <button type="submit">추가</button>
-        </form>
+        <NewProjectForm
+          action={createProject}
+          areas={areaList.filter((a) => !a.archived).map((a) => ({ id: a.id, name: a.name, icon: a.icon }))}
+          goals={goalList.filter((g) => g.status === "active").map((g) => ({ id: g.id, title: g.title, areaId: g.areaId }))}
+        />
       </Card>
 
       {/* 타임라인 */}
@@ -115,7 +102,7 @@ export default async function ProjectsPage() {
                     }}
                   >
                     <div
-                      className="absolute inset-y-0 left-0 bg-neutral-800"
+                      className={`absolute inset-y-0 left-0 ${area ? PILLARS[area.pillar].bar : "bg-neutral-800"}`}
                       style={{ width: `${rate * 100}%` }}
                     />
                     <span className="relative z-10 truncate px-2.5 text-xs font-medium text-white mix-blend-difference">
@@ -140,7 +127,7 @@ export default async function ProjectsPage() {
                 const goal = goalList.find((g) => g.id === p.goalId);
                 return (
                   <Link key={p.id} href={`/projects/${p.id}`} className="block">
-                    <Card className="transition hover:border-neutral-400">
+                    <Card pillar={area?.pillar} className="transition hover:shadow-md">
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex min-w-0 items-center gap-2">
                           {area && <span>{area.icon}</span>}

@@ -41,12 +41,38 @@ export function ProgressBar({
   );
 }
 
-export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+/* 영역(일·삶·돈) 구분용 왼쪽 컬러 띠 — Card에 pillar를 넘기면 붙는다 */
+const PILLAR_EDGE: Record<Pillar, string> = {
+  work: "border-l-4 border-l-work",
+  life: "border-l-4 border-l-life",
+  money: "border-l-4 border-l-money",
+};
+
+export function Card({
+  children,
+  className = "",
+  pillar,
+}: {
+  children: ReactNode;
+  className?: string;
+  pillar?: Pillar | null;
+}) {
   return (
-    <div className={`rounded-xl border border-neutral-200 bg-white p-4 shadow-sm ${className}`}>
+    <div className={`rounded-xl border border-neutral-200 bg-white p-4 shadow-sm ${pillar ? PILLAR_EDGE[pillar] : ""} ${className}`}>
       {children}
     </div>
   );
+}
+
+/* 리스트 행 등 작은 자리에서 영역을 표시하는 색 점 */
+export function PillarDot({ pillar }: { pillar?: Pillar | null }) {
+  if (!pillar) return null;
+  return <span className={`inline-block h-2.5 w-2.5 shrink-0 rounded-full ${PILLARS[pillar].bar}`} />;
+}
+
+/* 입력 폼 필드 위 회색 안내 라벨 */
+export function FieldLabel({ children }: { children: ReactNode }) {
+  return <span className="mb-1 block text-xs text-neutral-400">{children}</span>;
 }
 
 export function SectionTitle({ children }: { children: ReactNode }) {

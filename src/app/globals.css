@@ -38,6 +38,22 @@
   --color-navy-soft: #1b3d6e;
   --color-navy-text: #c9d8ee;
   --color-navy-faint: #7e97bd;
+
+  /* 타이포 스케일 — 기본 Tailwind보다 2단계 키움 (9/4 사용자 요청).
+     본문·UI 텍스트(xs~lg)는 두 단계 그대로, 제목(xl~2xl)은 과대해지지
+     않게 완만히 올림. 3xl 이상(랜딩 히어로)은 건드리지 않는다. */
+  --text-xs: 1rem;
+  --text-xs--line-height: 1.5rem;
+  --text-sm: 1.125rem;
+  --text-sm--line-height: 1.75rem;
+  --text-base: 1.25rem;
+  --text-base--line-height: 1.875rem;
+  --text-lg: 1.5rem;
+  --text-lg--line-height: 2rem;
+  --text-xl: 1.625rem;
+  --text-xl--line-height: 2.125rem;
+  --text-2xl: 1.875rem;
+  --text-2xl--line-height: 2.375rem;
 }
 
 html {

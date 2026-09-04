@@ -8,7 +8,7 @@ import {
   addKpi, updateKpi, deleteKpi,
 } from "@/lib/actions";
 import { ddayLabel, fmtDate } from "@/lib/dates";
-import { Card, DdayBadge, Empty, ProgressBar, SectionTitle } from "@/components/ui";
+import { Card, DdayBadge, Empty, FieldLabel, ProgressBar, SectionTitle } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -98,10 +98,16 @@ export default async function ProjectDetail({
             ))}
           </ul>
         )}
-        <form action={createTask} className="mt-3 flex gap-2 border-t border-neutral-100 pt-3">
+        <form action={createTask} className="mt-3 flex items-end gap-2 border-t border-neutral-100 pt-3">
           <input type="hidden" name="projectId" value={p.id} />
-          <input name="title" placeholder="새 할 일" required className="flex-1" />
-          <input type="date" name="dueDate" />
+          <label className="flex-1">
+            <FieldLabel>할 일</FieldLabel>
+            <input name="title" placeholder="새 할 일" required className="w-full" />
+          </label>
+          <label>
+            <FieldLabel>기한</FieldLabel>
+            <input type="date" name="dueDate" />
+          </label>
           <button type="submit">추가</button>
         </form>
       </Card>
@@ -117,12 +123,13 @@ export default async function ProjectDetail({
                 <label className="flex items-center gap-1 text-xs text-neutral-400">
                   목표
                   <input name="target" defaultValue={k.target ?? ""} className="w-24 text-right" inputMode="decimal" />
+                  {k.unit && <span className="text-neutral-500">{k.unit}</span>}
                 </label>
                 <label className="flex items-center gap-1 text-xs text-neutral-400">
-                  결과
+                  달성 현황
                   <input name="actual" defaultValue={k.actual ?? ""} className="w-24 text-right" inputMode="decimal" />
+                  {k.unit && <span className="text-neutral-500">{k.unit}</span>}
                 </label>
-                <span className="w-10 text-xs text-neutral-400">{k.unit}</span>
                 <button type="submit" className="btn-ghost text-xs">저장</button>
                 <button formAction={deleteKpi.bind(null, k.id)} className="text-xs text-neutral-300 hover:text-red-500">
                   삭제
@@ -131,10 +138,19 @@ export default async function ProjectDetail({
             ))}
           </div>
         )}
-        <form action={addKpi.bind(null, p.id)} className="flex flex-wrap gap-2 border-t border-neutral-100 pt-3">
-          <input name="name" placeholder="KPI (예: 해외 팔로워)" required className="min-w-40 flex-1" />
-          <input name="target" placeholder="목표 수치" className="w-24" inputMode="decimal" />
-          <input name="unit" placeholder="단위" className="w-16" />
+        <form action={addKpi.bind(null, p.id)} className="flex flex-wrap items-end gap-2 border-t border-neutral-100 pt-3">
+          <label className="min-w-40 flex-1">
+            <FieldLabel>KPI 항목</FieldLabel>
+            <input name="name" placeholder="KPI (예: 해외 팔로워)" required className="w-full" />
+          </label>
+          <label>
+            <FieldLabel>목표 수치</FieldLabel>
+            <input name="target" placeholder="목표 수치" className="w-24" inputMode="decimal" />
+          </label>
+          <label>
+            <FieldLabel>단위</FieldLabel>
+            <input name="unit" placeholder="명, 회, 원…" className="w-20" />
+          </label>
           <button type="submit">추가</button>
         </form>
       </Card>
