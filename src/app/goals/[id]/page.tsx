@@ -4,12 +4,23 @@ import { and, eq, asc } from "drizzle-orm";
 import { db, goals, milestones, areas, moneyAccounts } from "@/db";
 import { requireUserId } from "@/lib/session";
 import {
-  updateGoal, deleteGoal, addMilestone, toggleMilestone, updateMilestone, deleteMilestone, setGoalStatus,
+  updateGoal, deleteGoal, addMilestone, toggleMilestone, updateMilestone, deleteMilestone,
+  setGoalStatus, updateGoalCurrent,
 } from "@/lib/actions";
 import { MilestoneRow } from "./milestone-row";
+import { GoalSettings } from "./goal-settings";
+import { ConfirmButton } from "@/components/confirm-button";
 import { getGoalsWithProgress } from "@/lib/progress";
 import { ddayLabel, fmtDate } from "@/lib/dates";
-import { Card, DdayBadge, Empty, FieldLabel, ProgressBar, SectionTitle } from "@/components/ui";
+import { AreaChip, Card, DdayBadge, Empty, FieldLabel, ProgressBar, SectionTitle } from "@/components/ui";
+
+const METRIC_LABEL: Record<string, string> = {
+  milestone: "마일스톤 체크",
+  manual: "수치 직접 입력",
+  routine_count: "루틴 실행 횟수",
+  task_rate: "프로젝트 할일 완료율",
+  money: "계좌 잔액",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -47,10 +58,10 @@ export default async function GoalDetail({
 
       <header className="space-y-3">
         <div className="flex items-start justify-between gap-3">
-          <h1 className="text-2xl font-bold">
-            {area && <span className="mr-1.5">{area.icon}</span>}
-            {g.title}
-          </h1>
+          <div className="flex min-w-0 items-center gap-2.5">
+            {area && <AreaChip icon={area.icon} name={area.name} pillar={area.pillar} />}
+            <h1 className="truncate text-2xl font-bold">{g.title}</h1>
+          </div>
           <div className="flex shrink-0 items-center gap-2">
             <DdayBadge label={ddayLabel(g.dueDate, g.status === "done")} />
             {g.status !== "done" ? (
@@ -64,7 +75,33 @@ export default async function GoalDetail({
             )}
           </div>
         </div>
+        {/* 진척률 바 위: 측정 방식과 현재값·목표값을 명확히 표기 */}
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-neutral-500">{METRIC_LABEL[g.metricType]}</span>
+          <span className="font-medium tabular-nums text-neutral-700">
+            {g.metricType === "milestone" && `마일스톤 ${gp?.milestoneDone ?? 0}/${gp?.milestoneTotal ?? 0} 달성`}
+            {g.metricType === "task_rate" && `할 일 ${gp?.currentValue ?? 0}/${gp?.targetValue ?? 0} 완료`}
+            {(g.metricType === "manual" || g.metricType === "routine_count" || g.metricType === "money") &&
+              `현재 ${gp?.currentValue?.toLocaleString() ?? "—"}${g.metricUnit ?? ""} · 목표 ${gp?.targetValue?.toLocaleString() ?? "—"}${g.metricUnit ?? ""}`}
+          </span>
+        </div>
         <ProgressBar value={gp?.progress ?? null} pillar={area?.pillar ?? "life"} />
+        {/* 수치 직접 입력 목표는 여기서 현재값을 수시로 기록한다 */}
+        {g.metricType === "manual" && g.status !== "done" && (
+          <form action={updateGoalCurrent.bind(null, g.id)} className="flex items-end gap-2">
+            <label>
+              <FieldLabel>현재값 업데이트</FieldLabel>
+              <input
+                name="metricCurrent"
+                defaultValue={g.metricCurrent ?? ""}
+                inputMode="decimal"
+                className="w-32"
+              />
+            </label>
+            {g.metricUnit && <span className="pb-2.5 text-sm text-neutral-500">{g.metricUnit}</span>}
+            <button type="submit">기록</button>
+          </form>
+        )}
         {next && (
           <p className="text-sm text-neutral-500">
             🚩 다음 마일스톤: <b>{next.title}</b>
@@ -75,6 +112,12 @@ export default async function GoalDetail({
 
       <Card>
         <SectionTitle>마일스톤 ({gp?.milestoneDone ?? 0}/{gp?.milestoneTotal ?? 0})</SectionTitle>
+        {/* 마일스톤 체크 방식이 아니면 진척률과 무관한 선택 항목임을 안내 */}
+        {g.metricType !== "milestone" && (
+          <p className="-mt-1 mb-3 text-xs text-neutral-400">
+            이 목표의 진척률은 &lsquo;{METRIC_LABEL[g.metricType]}&rsquo;으로 계산됩니다 — 마일스톤은 필수가 아니라 선택적인 중간 체크포인트예요.
+          </p>
+        )}
         {ms.length === 0 ? (
           <Empty>목표까지의 중간 체크포인트를 추가해 보세요</Empty>
         ) : (
@@ -103,81 +146,33 @@ export default async function GoalDetail({
         </form>
       </Card>
 
-      <Card>
-        <SectionTitle>목표 설정</SectionTitle>
-        <form action={updateGoal.bind(null, g.id)} className="grid gap-3 sm:grid-cols-2">
-          <label className="text-sm">
-            <span className="mb-1 block text-xs text-neutral-500">제목</span>
-            <input name="title" defaultValue={g.title} required className="w-full" />
-          </label>
-          <label className="text-sm">
-            <span className="mb-1 block text-xs text-neutral-500">영역</span>
-            <select name="areaId" defaultValue={g.areaId ?? ""} className="w-full">
-              <option value="">없음</option>
-              {areaList.filter((a) => !a.archived).map((a) => (
-                <option key={a.id} value={a.id}>{a.icon} {a.name}</option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm">
-            <span className="mb-1 block text-xs text-neutral-500">기한</span>
-            <input type="date" name="dueDate" defaultValue={g.dueDate ?? ""} className="w-full" />
-          </label>
-          <label className="text-sm">
-            <span className="mb-1 block text-xs text-neutral-500">상태</span>
-            <select name="status" defaultValue={g.status} className="w-full">
-              <option value="active">진행 중</option>
-              <option value="hold">보류</option>
-              <option value="done">달성</option>
-            </select>
-          </label>
-          <label className="text-sm sm:col-span-2">
-            <span className="mb-1 block text-xs text-neutral-500">설명</span>
-            <input name="description" defaultValue={g.description ?? ""} className="w-full" placeholder="이 목표에 대한 간단한 설명" />
-          </label>
-          <label className="text-sm">
-            <span className="mb-1 block text-xs text-neutral-500">진척 측정 방식</span>
-            <select name="metricType" defaultValue={g.metricType} className="w-full">
-              <option value="milestone">마일스톤 체크</option>
-              <option value="manual">수치 직접 입력</option>
-              <option value="routine_count">루틴 실행 횟수</option>
-              <option value="task_rate">프로젝트 할일 완료율</option>
-              <option value="money">계좌 잔액</option>
-            </select>
-          </label>
-          <div className="grid grid-cols-3 gap-2 text-sm">
-            <label>
-              <span className="mb-1 block text-xs text-neutral-500">현재값</span>
-              <input name="metricCurrent" defaultValue={g.metricCurrent ?? ""} className="w-full" inputMode="decimal" />
-            </label>
-            <label>
-              <span className="mb-1 block text-xs text-neutral-500">목표값</span>
-              <input name="metricTarget" defaultValue={g.metricTarget ?? ""} className="w-full" inputMode="decimal" />
-            </label>
-            <label>
-              <span className="mb-1 block text-xs text-neutral-500">단위</span>
-              <input name="metricUnit" defaultValue={g.metricUnit ?? ""} className="w-full" placeholder="kg, 회, 원…" />
-            </label>
-          </div>
-          {g.metricType === "money" && (
-            <label className="text-sm">
-              <span className="mb-1 block text-xs text-neutral-500">연결 계좌</span>
-              <select name="moneyAccountId" defaultValue={g.moneyAccountId ?? ""} className="w-full">
-                <option value="">없음</option>
-                {accts.map((a) => (
-                  <option key={a.id} value={a.id}>{a.name}</option>
-                ))}
-              </select>
-            </label>
-          )}
-          <div className="flex items-end gap-2 sm:col-span-2">
-            <button type="submit">저장</button>
-          </div>
-        </form>
-        <form action={deleteGoal.bind(null, g.id)} className="mt-3 border-t border-neutral-100 pt-3">
-          <button className="text-xs text-neutral-400 hover:text-red-500">이 목표 삭제</button>
-        </form>
-      </Card>
+      <GoalSettings
+        goal={{
+          id: g.id,
+          title: g.title,
+          areaId: g.areaId,
+          dueDate: g.dueDate,
+          status: g.status,
+          description: g.description,
+          metricType: g.metricType,
+          metricCurrent: g.metricCurrent,
+          metricTarget: g.metricTarget,
+          metricUnit: g.metricUnit,
+          moneyAccountId: g.moneyAccountId,
+        }}
+        areas={areaList.filter((a) => !a.archived).map((a) => ({ id: a.id, name: a.name, icon: a.icon }))}
+        accounts={accts.map((a) => ({ id: a.id, name: a.name }))}
+        updateAction={updateGoal.bind(null, g.id)}
+      />
+
+      <form action={deleteGoal.bind(null, g.id)}>
+        <ConfirmButton
+          message={`'${g.title}' 목표를 삭제할까요? 마일스톤도 함께 삭제됩니다.`}
+          className="cursor-pointer text-xs text-neutral-400 hover:text-red-500"
+        >
+          이 목표 삭제
+        </ConfirmButton>
+      </form>
     </div>
   );
 }

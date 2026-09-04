@@ -132,6 +132,18 @@ export async function updateGoal(id: number, fd: FormData) {
   refresh();
 }
 
+/* '수치 직접 입력' 목표의 현재값만 수시로 갱신하는 빠른 업데이트 */
+export async function updateGoalCurrent(id: number, fd: FormData) {
+  const uid = await requireUserId();
+  const current = num(fd, "metricCurrent");
+  if (current == null) return;
+  await db
+    .update(goals)
+    .set({ metricCurrent: current })
+    .where(and(eq(goals.id, id), eq(goals.userId, uid)));
+  refresh();
+}
+
 export async function setGoalStatus(id: number, status: "active" | "done" | "hold") {
   const uid = await requireUserId();
   await db

@@ -20,6 +20,10 @@ export type GoalWithProgress = Goal & {
   nextMilestone: Milestone | null;
   milestoneDone: number;
   milestoneTotal: number;
+  /** 측정 방식별 현재값 (manual=직접 입력값, routine_count=실행 횟수, money=계좌 잔액 …) */
+  currentValue: number | null;
+  /** 측정 방식별 목표값 (milestone·task_rate는 전체 개수) */
+  targetValue: number | null;
 };
 
 export async function getGoalsWithProgress(uid: number): Promise<GoalWithProgress[]> {
@@ -79,15 +83,21 @@ export async function getGoalsWithProgress(uid: number): Promise<GoalWithProgres
       .sort((a, b) => (a.dueDate ?? "9999").localeCompare(b.dueDate ?? "9999"));
 
     let progress: number | null = null;
+    let currentValue: number | null = null;
+    let targetValue: number | null = null;
     switch (g.metricType) {
       case "milestone":
         progress = myMs.length ? doneMs.length / myMs.length : null;
+        currentValue = doneMs.length;
+        targetValue = myMs.length || null;
         break;
       case "manual":
         progress =
           g.metricTarget && g.metricCurrent != null
             ? g.metricCurrent / g.metricTarget
             : null;
+        currentValue = g.metricCurrent;
+        targetValue = g.metricTarget;
         break;
       case "routine_count": {
         const myRt = rts.filter((r) => r.goalId === g.id).map((r) => r.id);
@@ -95,6 +105,8 @@ export async function getGoalsWithProgress(uid: number): Promise<GoalWithProgres
           .filter((l) => myRt.includes(l.routineId))
           .reduce((s, l) => s + l.c, 0);
         progress = g.metricTarget ? count / g.metricTarget : null;
+        currentValue = count;
+        targetValue = g.metricTarget;
         break;
       }
       case "task_rate": {
@@ -103,12 +115,16 @@ export async function getGoalsWithProgress(uid: number): Promise<GoalWithProgres
         const total = st.reduce((s, t) => s + t.total, 0);
         const done = st.reduce((s, t) => s + t.done, 0);
         progress = total ? done / total : null;
+        currentValue = done;
+        targetValue = total || null;
         break;
       }
       case "money": {
         const acct = accts.find((a) => a.id === g.moneyAccountId);
         progress =
           acct && g.metricTarget ? acct.balance / g.metricTarget : null;
+        currentValue = acct?.balance ?? null;
+        targetValue = g.metricTarget;
         break;
       }
     }
@@ -121,6 +137,8 @@ export async function getGoalsWithProgress(uid: number): Promise<GoalWithProgres
       nextMilestone: undone[0] ?? null,
       milestoneDone: doneMs.length,
       milestoneTotal: myMs.length,
+      currentValue,
+      targetValue,
     };
   });
 }
