@@ -58,6 +58,8 @@ export const goals = pgTable("goals", {
     .default("milestone"),
   metricTarget: real("metric_target"),
   metricCurrent: real("metric_current"),
+  /* 감소형 목표(감량 등)의 출발점 — 있으면 (현재-시작)/(목표-시작)으로 진척률 계산 */
+  metricStart: real("metric_start"),
   metricUnit: text("metric_unit"),
   moneyAccountId: integer("money_account_id"),
 });

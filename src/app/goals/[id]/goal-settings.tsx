@@ -29,6 +29,7 @@ type GoalData = {
   metricType: string;
   metricCurrent: number | null;
   metricTarget: number | null;
+  metricStart: number | null;
   metricUnit: string | null;
   moneyAccountId: number | null;
 };
@@ -61,10 +62,18 @@ export function GoalSettings({
       ["진척 측정 방식", METRIC_LABEL[g.metricType] ?? g.metricType],
     ];
     if (g.metricType !== "milestone" && g.metricType !== "task_rate") {
-      rows.push([
-        "현재값 / 목표값",
-        `${g.metricCurrent?.toLocaleString() ?? "—"}${unit} / ${g.metricTarget?.toLocaleString() ?? "—"}${unit}`,
-      ]);
+      if (g.metricStart != null) {
+        rows.push([
+          "시작 → 목표",
+          `${g.metricStart.toLocaleString()}${unit} → ${g.metricTarget?.toLocaleString() ?? "—"}${unit}`,
+        ]);
+        rows.push(["현재값", `${g.metricCurrent?.toLocaleString() ?? "—"}${unit}`]);
+      } else {
+        rows.push([
+          "현재값 / 목표값",
+          `${g.metricCurrent?.toLocaleString() ?? "—"}${unit} / ${g.metricTarget?.toLocaleString() ?? "—"}${unit}`,
+        ]);
+      }
     }
     if (g.metricType === "money") {
       rows.push(["연결 계좌", acct?.name ?? "없음"]);
@@ -149,7 +158,11 @@ export function GoalSettings({
             ))}
           </select>
         </label>
-        <div className="grid grid-cols-3 gap-2 text-sm">
+        <div className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">
+          <label>
+            <FieldLabel>시작값</FieldLabel>
+            <NumberInput name="metricStart" defaultValue={g.metricStart} className="w-full" placeholder="예: 56" />
+          </label>
           <label>
             <FieldLabel>현재값</FieldLabel>
             <NumberInput name="metricCurrent" defaultValue={g.metricCurrent} className="w-full" />
@@ -163,6 +176,12 @@ export function GoalSettings({
             <input name="metricUnit" defaultValue={g.metricUnit ?? ""} className="w-full" placeholder="kg, 회, 원…" />
           </label>
         </div>
+        {metricType === "manual" && (
+          <p className="-mt-1 text-xs text-neutral-400 sm:col-span-2">
+            줄어드는 목표(감량 등)는 시작값을 넣으면 (현재−시작)÷(목표−시작)으로 진척률이 계산됩니다.
+            시작값이 없으면 현재값÷목표값으로 계산해요.
+          </p>
+        )}
         {metricType === "money" && (
           <label className="text-sm">
             <FieldLabel>연결 계좌</FieldLabel>

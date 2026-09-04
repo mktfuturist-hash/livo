@@ -83,7 +83,7 @@ export default async function GoalDetail({
             {g.metricType === "milestone" && `마일스톤 ${gp?.milestoneDone ?? 0}/${gp?.milestoneTotal ?? 0} 달성`}
             {g.metricType === "task_rate" && `할 일 ${gp?.currentValue ?? 0}/${gp?.targetValue ?? 0} 완료`}
             {(g.metricType === "manual" || g.metricType === "routine_count" || g.metricType === "money") &&
-              `현재 ${gp?.currentValue?.toLocaleString() ?? "—"}${g.metricUnit ?? ""} · 목표 ${gp?.targetValue?.toLocaleString() ?? "—"}${g.metricUnit ?? ""}`}
+              `${g.metricType === "manual" && g.metricStart != null ? `시작 ${g.metricStart.toLocaleString()}${g.metricUnit ?? ""} · ` : ""}현재 ${gp?.currentValue?.toLocaleString() ?? "—"}${g.metricUnit ?? ""} · 목표 ${gp?.targetValue?.toLocaleString() ?? "—"}${g.metricUnit ?? ""}`}
           </span>
         </div>
         <ProgressBar value={gp?.progress ?? null} pillar={area?.pillar ?? "life"} />
@@ -153,6 +153,7 @@ export default async function GoalDetail({
           metricType: g.metricType,
           metricCurrent: g.metricCurrent,
           metricTarget: g.metricTarget,
+          metricStart: g.metricStart,
           metricUnit: g.metricUnit,
           moneyAccountId: g.moneyAccountId,
         }}

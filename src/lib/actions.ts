@@ -101,6 +101,7 @@ export async function createGoal(fd: FormData) {
         | "manual" | "milestone" | "routine_count" | "task_rate" | "money",
       metricTarget: num(fd, "metricTarget"),
       metricCurrent: num(fd, "metricCurrent"),
+      metricStart: num(fd, "metricStart"),
       metricUnit: str(fd, "metricUnit"),
       moneyAccountId: num(fd, "moneyAccountId"),
     })
@@ -125,6 +126,7 @@ export async function updateGoal(id: number, fd: FormData) {
         | "manual" | "milestone" | "routine_count" | "task_rate" | "money",
       metricTarget: num(fd, "metricTarget"),
       metricCurrent: num(fd, "metricCurrent"),
+      metricStart: num(fd, "metricStart"),
       metricUnit: str(fd, "metricUnit"),
       moneyAccountId: num(fd, "moneyAccountId"),
     })
