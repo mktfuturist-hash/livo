@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card, FieldLabel, PillarChip, type Pillar } from "@/components/ui";
+import { Card, FieldLabel, type Pillar } from "@/components/ui";
 
 type Area = {
   id: number;
@@ -77,7 +77,6 @@ export function AreaCard({
         <div className="flex items-center gap-2">
           <span className="text-xl">{area.icon}</span>
           <span className="font-semibold">{area.name}</span>
-          <PillarChip pillar={area.pillar} />
         </div>
         {area.guideline && <p className="mt-1.5 text-sm text-neutral-500">{area.guideline}</p>}
       </div>
