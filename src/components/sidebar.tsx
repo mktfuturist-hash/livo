@@ -31,8 +31,11 @@ const mobileNav = MOBILE_TABS.map(
   (href) => NAV.find((item) => item.href === href)!,
 );
 
-export function Sidebar({ user }: { user: SidebarUser }) {
+export function Sidebar({ user, isAdmin = false }: { user: SidebarUser; isAdmin?: boolean }) {
   const pathname = usePathname();
+  const nav = isAdmin
+    ? [...NAV, { href: "/admin", label: "어드민", icon: "⚙️", group: true }]
+    : NAV;
   // 랜딩·로그인은 풀페이지(full-bleed) 라우트 — 앱 셸 없이 그린다
   if (pathname === "/landing" || pathname === "/login") return null;
   return (
@@ -48,7 +51,7 @@ export function Sidebar({ user }: { user: SidebarUser }) {
             </span>
           </Link>
           <nav className="space-y-0.5">
-            {NAV.map((item) => {
+            {nav.map((item) => {
               const active =
                 item.href === "/"
                   ? pathname === "/"

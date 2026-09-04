@@ -8,7 +8,8 @@ import {
   moneyAccounts, moneySnapshots, moneyTxns, notes, reviews,
 } from "@/db";
 import { monthStr, todayStr } from "@/lib/dates";
-import { requireUserId } from "@/lib/session";
+import { isAdmin, requireUserId } from "@/lib/session";
+import { users } from "@/db/schema";
 import { signOut } from "@/auth";
 
 function str(fd: FormData, key: string): string | null {
@@ -42,6 +43,32 @@ async function owns(
 
 export async function logout() {
   await signOut({ redirectTo: "/" });
+}
+
+// ── 어드민 ──
+/** 사용자와 그 사용자의 모든 데이터를 삭제 (어드민 전용, 본인 계정은 불가) */
+export async function adminDeleteUser(targetId: number) {
+  if (!(await isAdmin())) return;
+  const myId = await requireUserId();
+  if (targetId === myId) return; // 본인 계정 보호
+  await db.transaction(async (tx) => {
+    // FK 자식 → 부모 순서로 지운다 (13개 user_id 테이블 전부)
+    await tx.delete(routineLogs).where(eq(routineLogs.userId, targetId));
+    await tx.delete(kpis).where(eq(kpis.userId, targetId));
+    await tx.delete(tasks).where(eq(tasks.userId, targetId));
+    await tx.delete(milestones).where(eq(milestones.userId, targetId));
+    await tx.delete(routines).where(eq(routines.userId, targetId));
+    await tx.delete(projects).where(eq(projects.userId, targetId));
+    await tx.delete(goals).where(eq(goals.userId, targetId));
+    await tx.delete(moneyTxns).where(eq(moneyTxns.userId, targetId));
+    await tx.delete(moneySnapshots).where(eq(moneySnapshots.userId, targetId));
+    await tx.delete(moneyAccounts).where(eq(moneyAccounts.userId, targetId));
+    await tx.delete(notes).where(eq(notes.userId, targetId));
+    await tx.delete(reviews).where(eq(reviews.userId, targetId));
+    await tx.delete(areas).where(eq(areas.userId, targetId));
+    await tx.delete(users).where(eq(users.id, targetId));
+  });
+  refresh();
 }
 
 // ── 영역 ──

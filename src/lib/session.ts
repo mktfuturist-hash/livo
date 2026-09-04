@@ -11,6 +11,16 @@ export async function requireUserId(): Promise<number> {
   return uid;
 }
 
+/** 어드민 여부 — ADMIN_EMAIL 환경변수와 로그인 이메일이 일치할 때만. 로컬(무인증)은 허용 */
+export async function isAdmin(): Promise<boolean> {
+  if (!authEnabled) return true;
+  const admin = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  if (!admin) return false;
+  const session = await auth();
+  const email = session?.user?.email?.trim().toLowerCase();
+  return !!email && email === admin;
+}
+
 /** 사이드바 표시용 — 미로그인/로컬이면 null */
 export async function currentUser(): Promise<{
   name: string | null;
