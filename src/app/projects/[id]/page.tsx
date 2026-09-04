@@ -8,6 +8,7 @@ import {
   addKpi, updateKpi, deleteKpi,
 } from "@/lib/actions";
 import { TaskRow } from "./task-row";
+import { NumberInput } from "@/components/number-input";
 import { ddayLabel, fmtDate } from "@/lib/dates";
 import { Card, DdayBadge, Empty, FieldLabel, ProgressBar, SectionTitle } from "@/components/ui";
 
@@ -112,12 +113,12 @@ export default async function ProjectDetail({
                 <span className="min-w-32 flex-1 text-sm font-medium">{k.name}</span>
                 <label className="flex items-center gap-1 text-xs text-neutral-400">
                   목표
-                  <input name="target" defaultValue={k.target ?? ""} className="w-24 text-right" inputMode="decimal" />
+                  <NumberInput name="target" defaultValue={k.target} className="w-28 text-right" />
                   {k.unit && <span className="text-neutral-500">{k.unit}</span>}
                 </label>
                 <label className="flex items-center gap-1 text-xs text-neutral-400">
                   달성 현황
-                  <input name="actual" defaultValue={k.actual ?? ""} className="w-24 text-right" inputMode="decimal" />
+                  <NumberInput name="actual" defaultValue={k.actual} className="w-28 text-right" />
                   {k.unit && <span className="text-neutral-500">{k.unit}</span>}
                 </label>
                 <button type="submit" className="btn-ghost text-xs">저장</button>
@@ -135,7 +136,7 @@ export default async function ProjectDetail({
           </label>
           <label>
             <FieldLabel>목표 수치</FieldLabel>
-            <input name="target" placeholder="목표 수치" className="w-24" inputMode="decimal" />
+            <NumberInput name="target" placeholder="목표 수치" className="w-28" />
           </label>
           <label>
             <FieldLabel>단위</FieldLabel>

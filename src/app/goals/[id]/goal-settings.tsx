@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Card, FieldLabel, SectionTitle } from "@/components/ui";
+import { NumberInput } from "@/components/number-input";
 import { fmtDate } from "@/lib/dates";
 
 const METRIC_LABEL: Record<string, string> = {
@@ -62,7 +63,7 @@ export function GoalSettings({
     if (g.metricType !== "milestone" && g.metricType !== "task_rate") {
       rows.push([
         "현재값 / 목표값",
-        `${g.metricCurrent ?? "—"}${unit} / ${g.metricTarget ?? "—"}${unit}`,
+        `${g.metricCurrent?.toLocaleString() ?? "—"}${unit} / ${g.metricTarget?.toLocaleString() ?? "—"}${unit}`,
       ]);
     }
     if (g.metricType === "money") {
@@ -151,11 +152,11 @@ export function GoalSettings({
         <div className="grid grid-cols-3 gap-2 text-sm">
           <label>
             <FieldLabel>현재값</FieldLabel>
-            <input name="metricCurrent" defaultValue={g.metricCurrent ?? ""} className="w-full" inputMode="decimal" />
+            <NumberInput name="metricCurrent" defaultValue={g.metricCurrent} className="w-full" />
           </label>
           <label>
             <FieldLabel>목표값</FieldLabel>
-            <input name="metricTarget" defaultValue={g.metricTarget ?? ""} className="w-full" inputMode="decimal" />
+            <NumberInput name="metricTarget" defaultValue={g.metricTarget} className="w-full" />
           </label>
           <label>
             <FieldLabel>단위</FieldLabel>

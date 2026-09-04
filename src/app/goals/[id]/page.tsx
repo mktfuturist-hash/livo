@@ -8,6 +8,7 @@ import {
   setGoalStatus, updateGoalCurrent,
 } from "@/lib/actions";
 import { MilestoneRow } from "./milestone-row";
+import { NumberInput } from "@/components/number-input";
 import { GoalSettings } from "./goal-settings";
 import { ConfirmButton } from "@/components/confirm-button";
 import { getGoalsWithProgress } from "@/lib/progress";
@@ -91,12 +92,7 @@ export default async function GoalDetail({
           <form action={updateGoalCurrent.bind(null, g.id)} className="flex items-end gap-2">
             <label>
               <FieldLabel>현재값 업데이트</FieldLabel>
-              <input
-                name="metricCurrent"
-                defaultValue={g.metricCurrent ?? ""}
-                inputMode="decimal"
-                className="w-32"
-              />
+              <NumberInput name="metricCurrent" defaultValue={g.metricCurrent} className="w-36" />
             </label>
             {g.metricUnit && <span className="pb-2.5 text-sm text-neutral-500">{g.metricUnit}</span>}
             <button type="submit">기록</button>
