@@ -17,6 +17,24 @@ export function PillarChip({ pillar }: { pillar: Pillar }) {
   );
 }
 
+/* 특정 영역(예: 💼 커리어)을 분류 컬러 알약으로 표시 — 목표·프로젝트 카드용 */
+export function AreaChip({
+  icon,
+  name,
+  pillar,
+}: {
+  icon?: string | null;
+  name: string;
+  pillar: Pillar;
+}) {
+  const p = PILLARS[pillar];
+  return (
+    <span className={`inline-flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium ${p.chip}`}>
+      {icon ?? p.icon} {name}
+    </span>
+  );
+}
+
 export function ProgressBar({
   value,
   pillar = "life",

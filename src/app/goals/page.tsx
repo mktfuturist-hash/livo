@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { db, areas } from "@/db";
+import { db, areas, milestones } from "@/db";
 import { asc, eq } from "drizzle-orm";
 import { getGoalsWithProgress } from "@/lib/progress";
 import { createGoal, deleteGoal } from "@/lib/actions";
 import { requireUserId } from "@/lib/session";
 import { ddayLabel, fmtDate } from "@/lib/dates";
 import {
-  Card, DdayBadge, Empty, FieldLabel, PillarDot, ProgressBar, SectionTitle,
+  AreaChip, Card, DdayBadge, Empty, FieldLabel, PillarDot, ProgressBar, SectionTitle,
 } from "@/components/ui";
 import { ConfirmButton } from "@/components/confirm-button";
 
@@ -22,10 +22,17 @@ const METRIC_LABEL: Record<string, string> = {
 
 export default async function GoalsPage() {
   const uid = await requireUserId();
-  const [gs, areaList] = await Promise.all([
+  const [gs, areaList, msList] = await Promise.all([
     getGoalsWithProgress(uid),
     db.select().from(areas).where(eq(areas.userId, uid)).orderBy(asc(areas.sort), asc(areas.id)),
+    db.select().from(milestones).where(eq(milestones.userId, uid)).orderBy(asc(milestones.dueDate), asc(milestones.id)),
   ]);
+  const msByGoal = new Map<number, typeof msList>();
+  for (const m of msList) {
+    const list = msByGoal.get(m.goalId) ?? [];
+    list.push(m);
+    msByGoal.set(m.goalId, list);
+  }
   const activeAreas = areaList.filter((a) => !a.archived);
   const active = gs.filter((g) => g.status === "active");
   const done = gs.filter((g) => g.status === "done");
@@ -82,13 +89,14 @@ export default async function GoalsPage() {
           <div className="space-y-3">
             {active.map((g) => {
               const area = areaOf(g.areaId);
+              const goalMs = g.metricType === "milestone" ? (msByGoal.get(g.id) ?? []) : [];
               return (
                 <Card key={g.id} pillar={area?.pillar} className="relative transition hover:shadow-md">
                   {/* 카드 전체 클릭 → 상세. 버튼들은 z-10으로 위에 얹는다 */}
                   <Link href={`/goals/${g.id}`} className="absolute inset-0" aria-label={g.title} />
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-2">
-                      {area && <span>{area.icon}</span>}
+                      {area && <AreaChip icon={area.icon} name={area.name} pillar={area.pillar} />}
                       <span className="truncate font-semibold">{g.title}</span>
                     </div>
                     <div className="relative z-10 flex shrink-0 items-center gap-2 text-xs text-neutral-500">
@@ -113,9 +121,33 @@ export default async function GoalsPage() {
                   <div className="mt-2.5">
                     <ProgressBar value={g.progress} pillar={area?.pillar ?? "life"} />
                   </div>
+                  {/* 마일스톤 측정 목표는 카드 안에 마일스톤 목록·달성 여부를 바로 보여준다 */}
+                  {goalMs.length > 0 && (
+                    <ul className="mt-2.5 space-y-1 border-t border-neutral-100 pt-2.5">
+                      {goalMs.map((m) => (
+                        <li key={m.id} className="flex items-center gap-2 text-xs">
+                          <span
+                            className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] ${
+                              m.done
+                                ? "border-neutral-900 bg-neutral-900 text-white"
+                                : "border-neutral-300 bg-white text-transparent"
+                            }`}
+                          >
+                            ✓
+                          </span>
+                          <span className={`flex-1 truncate ${m.done ? "text-neutral-400 line-through" : "text-neutral-600"}`}>
+                            {m.title}
+                          </span>
+                          {m.dueDate && (
+                            <span className="tabular-nums text-neutral-400">{fmtDate(m.dueDate)}</span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   <div className="mt-1.5 flex items-center justify-between text-xs text-neutral-400">
                     <span>{METRIC_LABEL[g.metricType]}</span>
-                    {g.nextMilestone && (
+                    {goalMs.length === 0 && g.nextMilestone && (
                       <span>
                         다음: {g.nextMilestone.title}
                         {g.nextMilestone.dueDate && ` (${fmtDate(g.nextMilestone.dueDate)})`}

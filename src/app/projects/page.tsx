@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { asc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import { db, projects, tasks, areas, goals } from "@/db";
 import { createProject } from "@/lib/actions";
 import { requireUserId } from "@/lib/session";
 import { ddayLabel, fmtDate, todayStr } from "@/lib/dates";
-import { Card, DdayBadge, Empty, PILLARS, ProgressBar, SectionTitle } from "@/components/ui";
+import { AreaChip, Card, DdayBadge, Empty, PILLARS, ProgressBar, SectionTitle } from "@/components/ui";
 import { NewProjectForm } from "./new-project-form";
 
 export const dynamic = "force-dynamic";
@@ -38,6 +38,16 @@ export default async function ProjectsPage() {
 
   const statOf = (id: number) =>
     taskStats.find((t) => t.projectId === id) ?? { total: 0, done: 0 };
+
+  // 아직 안 한 할 일 — 카드 안에 "다음에 하게 될 항목"으로 노출
+  const undoneTasks = prjs.length
+    ? await db
+        .select()
+        .from(tasks)
+        .where(and(inArray(tasks.projectId, prjs.map((p) => p.id)), eq(tasks.done, false)))
+        .orderBy(asc(tasks.dueDate), asc(tasks.id))
+    : [];
+  const undoneOf = (id: number) => undoneTasks.filter((t) => t.projectId === id);
 
   // ── 타임라인 범위: 프로젝트 기간 전체를 감싸는 구간 ──
   const dated = prjs.filter((p) => p.startDate && p.endDate && p.status !== "done");
@@ -130,7 +140,7 @@ export default async function ProjectsPage() {
                     <Card pillar={area?.pillar} className="transition hover:shadow-md">
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex min-w-0 items-center gap-2">
-                          {area && <span>{area.icon}</span>}
+                          {area && <AreaChip icon={area.icon} name={area.name} pillar={area.pillar} />}
                           <span className={`truncate font-semibold ${status === "done" ? "text-neutral-400 line-through" : ""}`}>
                             {p.title}
                           </span>
@@ -155,6 +165,28 @@ export default async function ProjectsPage() {
                           </div>
                         </div>
                       )}
+                      {/* 다음에 하게 될 할 일 미리보기 (완료 전 프로젝트만) */}
+                      {status !== "done" && (() => {
+                        const next = undoneOf(p.id);
+                        if (next.length === 0) return null;
+                        const shown = next.slice(0, 4);
+                        return (
+                          <ul className="mt-2.5 space-y-1 border-t border-neutral-100 pt-2.5">
+                            {shown.map((t) => (
+                              <li key={t.id} className="flex items-center gap-2 text-xs">
+                                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded border border-neutral-300 bg-white" />
+                                <span className="flex-1 truncate text-neutral-600">{t.title}</span>
+                                {t.dueDate && (
+                                  <span className="tabular-nums text-neutral-400">{fmtDate(t.dueDate)}</span>
+                                )}
+                              </li>
+                            ))}
+                            {next.length > shown.length && (
+                              <li className="text-xs text-neutral-400">… 외 {next.length - shown.length}개</li>
+                            )}
+                          </ul>
+                        );
+                      })()}
                     </Card>
                   </Link>
                 );
