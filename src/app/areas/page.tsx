@@ -2,7 +2,7 @@ import { db, areas } from "@/db";
 import { asc, eq } from "drizzle-orm";
 import { createArea, toggleAreaArchived } from "@/lib/actions";
 import { requireUserId } from "@/lib/session";
-import { Card, Empty, PILLARS, PillarChip, SectionTitle, type Pillar } from "@/components/ui";
+import { Card, Empty, FieldLabel, PILLARS, PillarChip, SectionTitle, type Pillar } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -27,15 +27,28 @@ export default async function AreasPage() {
 
       <Card>
         <SectionTitle>새 영역 추가</SectionTitle>
+        {/* 상위 카테고리(Work·Life·Money 분류)부터 왼쪽에 배치 */}
         <form action={createArea} className="flex flex-wrap items-end gap-2">
-          <input name="icon" placeholder="🏃" className="w-16 text-center" maxLength={4} />
-          <input name="name" placeholder="영역 이름 (예: 건강)" required className="w-44" />
-          <select name="pillar" defaultValue="life">
-            <option value="work">Work</option>
-            <option value="life">Life</option>
-            <option value="money">Money</option>
-          </select>
-          <input name="guideline" placeholder="이 영역에서 나는 어떤 사람이 되고 싶은가?" className="min-w-60 flex-1" />
+          <label>
+            <FieldLabel>분류</FieldLabel>
+            <select name="pillar" defaultValue="life">
+              <option value="work">Work</option>
+              <option value="life">Life</option>
+              <option value="money">Money</option>
+            </select>
+          </label>
+          <label>
+            <FieldLabel>아이콘</FieldLabel>
+            <input name="icon" placeholder="🏃" className="w-16 text-center" maxLength={4} />
+          </label>
+          <label>
+            <FieldLabel>영역 이름</FieldLabel>
+            <input name="name" placeholder="영역 이름 (예: 건강)" required className="w-44" />
+          </label>
+          <label className="min-w-60 flex-1">
+            <FieldLabel>가이드라인</FieldLabel>
+            <input name="guideline" placeholder="이 영역에서 나는 어떤 사람이 되고 싶은가?" className="w-full" />
+          </label>
           <button type="submit">추가</button>
         </form>
       </Card>

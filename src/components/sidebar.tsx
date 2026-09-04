@@ -41,8 +41,9 @@ export function Sidebar({ user }: { user: SidebarUser }) {
       <aside className="hidden w-52 shrink-0 bg-navy md:block">
         <div className="sticky top-0 flex h-screen flex-col p-4">
           <Link href="/" className="mb-6 block px-2">
-            <span className="text-lg font-bold tracking-tight text-white">WID</span>
-            <span className="mt-0.5 block text-[10px] leading-tight text-navy-faint">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-wide.png" alt="WID planner" className="w-full" />
+            <span className="mt-1.5 block text-[10px] leading-tight text-navy-faint">
               What I Do makes me Wiser.
             </span>
           </Link>
