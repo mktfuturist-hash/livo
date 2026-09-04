@@ -4,9 +4,10 @@ import { and, asc, eq } from "drizzle-orm";
 import { db, projects, tasks, kpis, areas, goals } from "@/db";
 import { requireUserId } from "@/lib/session";
 import {
-  updateProject, deleteProject, createTask, toggleTask, deleteTask,
+  updateProject, deleteProject, createTask, toggleTask, updateTask, deleteTask,
   addKpi, updateKpi, deleteKpi,
 } from "@/lib/actions";
+import { TaskRow } from "./task-row";
 import { ddayLabel, fmtDate } from "@/lib/dates";
 import { Card, DdayBadge, Empty, FieldLabel, ProgressBar, SectionTitle } from "@/components/ui";
 
@@ -69,32 +70,21 @@ export default async function ProjectDetail({
         ) : (
           <ul className="space-y-1.5">
             {ts.map((t) => (
-              <li key={t.id} className="group flex items-center gap-2.5">
-                <form action={toggleTask.bind(null, t.id, !t.done)}>
-                  <button
-                    className={`flex h-5 w-5 items-center justify-center rounded-md border text-xs ${
-                      t.done
-                        ? "border-neutral-900 bg-neutral-900 text-white"
-                        : "border-neutral-300 bg-white text-transparent hover:border-neutral-500"
-                    }`}
-                    aria-label="완료 토글"
-                  >
-                    ✓
-                  </button>
-                </form>
-                <span className={`flex-1 text-sm ${t.done ? "text-neutral-400 line-through" : ""}`}>
-                  {t.title}
-                </span>
-                {t.dueDate && (
-                  <span className="text-xs tabular-nums text-neutral-400">{fmtDate(t.dueDate)}</span>
-                )}
-                {!t.done && <DdayBadge label={t.dueDate ? ddayLabel(t.dueDate) : ""} />}
-                <form action={deleteTask.bind(null, t.id)}>
-                  <button className="invisible text-xs text-neutral-300 hover:text-red-500 group-hover:visible">
-                    삭제
-                  </button>
-                </form>
-              </li>
+              <TaskRow
+                key={t.id}
+                task={{
+                  id: t.id,
+                  title: t.title,
+                  dueDate: t.dueDate,
+                  done: t.done,
+                  projectId: t.projectId,
+                  areaId: t.areaId,
+                  ddayLabel: t.dueDate ? ddayLabel(t.dueDate) : "",
+                }}
+                toggleAction={toggleTask.bind(null, t.id, !t.done)}
+                updateAction={updateTask.bind(null, t.id)}
+                deleteAction={deleteTask.bind(null, t.id)}
+              />
             ))}
           </ul>
         )}
