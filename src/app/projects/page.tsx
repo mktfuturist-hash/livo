@@ -59,7 +59,7 @@ export default async function ProjectsPage() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-2xl font-bold">프로젝트</h1>
+        <h1 className="text-2xl font-bold">📁 프로젝트</h1>
         <p className="mt-1 text-sm text-neutral-500">
           목표를 향한 구체적인 실행 단위 — 할 일을 붙여 계획하세요.
         </p>

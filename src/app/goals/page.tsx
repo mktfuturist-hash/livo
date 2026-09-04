@@ -35,7 +35,7 @@ export default async function GoalsPage() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-2xl font-bold">목표</h1>
+        <h1 className="text-2xl font-bold">🎯 목표</h1>
         <p className="mt-1 text-sm text-neutral-500">
           기한과 측정 방식을 정하면 진척률이 자동으로 계산됩니다.
         </p>
@@ -103,7 +103,7 @@ export default async function GoalsPage() {
                       <form action={deleteGoal.bind(null, g.id)}>
                         <ConfirmButton
                           message={`'${g.title}' 목표를 삭제할까요? 마일스톤도 함께 삭제됩니다.`}
-                          className="cursor-pointer rounded-lg border border-neutral-200 bg-white px-2 py-1 text-xs text-neutral-400 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                          className="cursor-pointer rounded-lg border border-neutral-300 bg-white px-2 py-1 text-xs text-neutral-600 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                         >
                           삭제
                         </ConfirmButton>

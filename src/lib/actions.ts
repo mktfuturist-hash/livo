@@ -162,6 +162,17 @@ export async function addMilestone(goalId: number, fd: FormData) {
   refresh();
 }
 
+export async function updateMilestone(id: number, fd: FormData) {
+  const uid = await requireUserId();
+  const title = str(fd, "title");
+  if (!title) return;
+  await db
+    .update(milestones)
+    .set({ title, dueDate: str(fd, "dueDate") })
+    .where(and(eq(milestones.id, id), eq(milestones.userId, uid)));
+  refresh();
+}
+
 export async function toggleMilestone(id: number, done: boolean) {
   const uid = await requireUserId();
   await db

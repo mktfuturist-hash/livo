@@ -4,8 +4,9 @@ import { and, eq, asc } from "drizzle-orm";
 import { db, goals, milestones, areas, moneyAccounts } from "@/db";
 import { requireUserId } from "@/lib/session";
 import {
-  updateGoal, deleteGoal, addMilestone, toggleMilestone, deleteMilestone, setGoalStatus,
+  updateGoal, deleteGoal, addMilestone, toggleMilestone, updateMilestone, deleteMilestone, setGoalStatus,
 } from "@/lib/actions";
+import { MilestoneRow } from "./milestone-row";
 import { getGoalsWithProgress } from "@/lib/progress";
 import { ddayLabel, fmtDate } from "@/lib/dates";
 import { Card, DdayBadge, Empty, FieldLabel, ProgressBar, SectionTitle } from "@/components/ui";
@@ -79,31 +80,13 @@ export default async function GoalDetail({
         ) : (
           <ul className="space-y-1.5">
             {ms.map((m) => (
-              <li key={m.id} className="group flex items-center gap-2.5">
-                <form action={toggleMilestone.bind(null, m.id, !m.done)}>
-                  <button
-                    className={`flex h-5 w-5 items-center justify-center rounded-md border text-xs ${
-                      m.done
-                        ? "border-neutral-900 bg-neutral-900 text-white"
-                        : "border-neutral-300 bg-white text-transparent hover:border-neutral-500"
-                    }`}
-                    aria-label="완료 토글"
-                  >
-                    ✓
-                  </button>
-                </form>
-                <span className={`flex-1 text-sm ${m.done ? "text-neutral-400 line-through" : ""}`}>
-                  {m.title}
-                </span>
-                {m.dueDate && (
-                  <span className="text-xs tabular-nums text-neutral-400">{fmtDate(m.dueDate)}</span>
-                )}
-                <form action={deleteMilestone.bind(null, m.id)}>
-                  <button className="invisible text-xs text-neutral-300 hover:text-red-500 group-hover:visible">
-                    삭제
-                  </button>
-                </form>
-              </li>
+              <MilestoneRow
+                key={m.id}
+                milestone={{ id: m.id, title: m.title, dueDate: m.dueDate, done: m.done }}
+                toggleAction={toggleMilestone.bind(null, m.id, !m.done)}
+                updateAction={updateMilestone.bind(null, m.id)}
+                deleteAction={deleteMilestone.bind(null, m.id)}
+              />
             ))}
           </ul>
         )}

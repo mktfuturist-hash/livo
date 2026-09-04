@@ -50,7 +50,7 @@ export default async function NotesPage({
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-bold">노트</h1>
+        <h1 className="text-2xl font-bold">📝 노트</h1>
         <p className="mt-1 text-sm text-neutral-500">
           배운 것·아이디어·자료를 영역/목표/프로젝트에 연결해 쌓아두세요.
         </p>

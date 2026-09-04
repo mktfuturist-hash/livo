@@ -108,7 +108,7 @@ export default async function MoneyPage() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-2xl font-bold">머니보드</h1>
+        <h1 className="text-2xl font-bold">💰 머니보드</h1>
         <p className="mt-1 text-sm text-neutral-500">
           자산은 월 1회 잔액 갱신, 지출은 그때그때 — 순자산과 저축률이 자동 계산됩니다.
         </p>

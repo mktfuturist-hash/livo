@@ -15,7 +15,7 @@ export function ConfirmButton({
   return (
     <button
       type="submit"
-      className={className}
+      className={`unstyled ${className}`}
       onClick={(e) => {
         if (!window.confirm(message)) e.preventDefault();
       }}

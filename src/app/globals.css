@@ -80,7 +80,14 @@ textarea {
   @apply rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-sm outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900;
 }
 
-button[type="submit"],
+/* 한 줄 입력류는 높이를 통일 — 텍스트·날짜 입력과 드롭다운의 칸 높이가 어긋나지 않게 */
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+select {
+  @apply h-11;
+}
+
+/* .unstyled 버튼은 검정 제출 버튼 스타일을 받지 않는다 (카드 안 보조 버튼용) */
+button[type="submit"]:not(.unstyled),
 .btn {
   @apply cursor-pointer rounded-lg bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-40;
 }

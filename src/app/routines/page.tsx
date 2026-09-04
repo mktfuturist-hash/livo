@@ -35,7 +35,7 @@ export default async function RoutinesPage() {
     <div className="space-y-8">
       <header className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-bold">루틴</h1>
+          <h1 className="text-2xl font-bold">🔁 루틴</h1>
           <p className="mt-1 text-sm text-neutral-500">
             꾸준히 반복하는 것들 — 버튼 한 번으로 기록됩니다.
           </p>

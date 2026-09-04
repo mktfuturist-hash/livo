@@ -25,7 +25,7 @@ export default async function ReviewsPage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-bold">계획·회고</h1>
+        <h1 className="text-2xl font-bold">🪞 계획·회고</h1>
         <p className="mt-1 text-sm text-neutral-500">
           왼쪽엔 계획, 오른쪽엔 회고 — 양식이 자동으로 채워집니다.
         </p>

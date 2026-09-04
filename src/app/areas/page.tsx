@@ -1,10 +1,18 @@
 import { db, areas } from "@/db";
 import { asc, eq } from "drizzle-orm";
-import { createArea, toggleAreaArchived } from "@/lib/actions";
+import { createArea, updateArea, toggleAreaArchived } from "@/lib/actions";
 import { requireUserId } from "@/lib/session";
-import { Card, Empty, FieldLabel, PILLARS, PillarChip, SectionTitle, type Pillar } from "@/components/ui";
+import { Card, Empty, FieldLabel, PILLARS, SectionTitle, type Pillar } from "@/components/ui";
+import { AreaCard } from "./area-card";
 
 export const dynamic = "force-dynamic";
+
+/* 분류 섹션 헤더 밴드 — 컬러 음영을 가로로 길게 깔아 영역 구분을 또렷하게 */
+const BAND: Record<Pillar, string> = {
+  work: "bg-work-tint text-work-ink",
+  life: "bg-life-tint text-life-ink",
+  money: "bg-money-tint text-money-ink",
+};
 
 export default async function AreasPage() {
   const uid = await requireUserId();
@@ -19,7 +27,7 @@ export default async function AreasPage() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-2xl font-bold">영역</h1>
+        <h1 className="text-2xl font-bold">🗂️ 영역</h1>
         <p className="mt-1 text-sm text-neutral-500">
           인생을 구성하는 최상위 카테고리. 영역에서 목표·프로젝트·노트가 뻗어나갑니다.
         </p>
@@ -38,10 +46,6 @@ export default async function AreasPage() {
             </select>
           </label>
           <label>
-            <FieldLabel>아이콘</FieldLabel>
-            <input name="icon" placeholder="🏃" className="w-16 text-center" maxLength={4} />
-          </label>
-          <label>
             <FieldLabel>영역 이름</FieldLabel>
             <input name="name" placeholder="영역 이름 (예: 건강)" required className="w-44" />
           </label>
@@ -57,31 +61,20 @@ export default async function AreasPage() {
         const list = active.filter((a) => a.pillar === pillar);
         return (
           <section key={pillar}>
-            <SectionTitle>
+            <h2 className={`mb-3 rounded-lg px-3 py-2 text-sm font-semibold ${BAND[pillar]}`}>
               {PILLARS[pillar].icon} {PILLARS[pillar].label}
-            </SectionTitle>
+            </h2>
             {list.length === 0 ? (
               <Empty>아직 영역이 없습니다</Empty>
             ) : (
               <div className="grid gap-3 sm:grid-cols-2">
                 {list.map((a) => (
-                  <Card key={a.id} className="flex items-start justify-between gap-2">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">{a.icon}</span>
-                        <span className="font-semibold">{a.name}</span>
-                        <PillarChip pillar={a.pillar} />
-                      </div>
-                      {a.guideline && (
-                        <p className="mt-1.5 text-sm text-neutral-500">{a.guideline}</p>
-                      )}
-                    </div>
-                    <form action={toggleAreaArchived.bind(null, a.id, true)}>
-                      <button className="text-xs text-neutral-400 hover:text-neutral-600">
-                        보관
-                      </button>
-                    </form>
-                  </Card>
+                  <AreaCard
+                    key={a.id}
+                    area={a}
+                    updateAction={updateArea.bind(null, a.id)}
+                    archiveAction={toggleAreaArchived.bind(null, a.id, true)}
+                  />
                 ))}
               </div>
             )}
@@ -97,7 +90,7 @@ export default async function AreasPage() {
               <div key={a.id} className="flex items-center gap-2 text-sm text-neutral-400">
                 <span>{a.icon} {a.name}</span>
                 <form action={toggleAreaArchived.bind(null, a.id, false)}>
-                  <button className="text-xs underline hover:text-neutral-600">복원</button>
+                  <button className="unstyled cursor-pointer text-xs underline hover:text-neutral-600">복원</button>
                 </form>
               </div>
             ))}
