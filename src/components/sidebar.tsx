@@ -33,9 +33,12 @@ const mobileNav = MOBILE_TABS.map(
 
 export function Sidebar({ user, isAdmin = false }: { user: SidebarUser; isAdmin?: boolean }) {
   const pathname = usePathname();
-  const nav = isAdmin
-    ? [...NAV, { href: "/admin", label: "어드민", icon: "⚙️", group: true }]
-    : NAV;
+  // 마이페이지는 모두에게, 어드민은 마이페이지 안에서 진입 (관리자에게는 메뉴에도 노출)
+  const nav = [
+    ...NAV,
+    { href: "/mypage", label: "마이페이지", icon: "👤", group: true },
+    ...(isAdmin ? [{ href: "/admin", label: "어드민", icon: "⚙️" }] : []),
+  ];
   // 랜딩·로그인은 풀페이지(full-bleed) 라우트 — 앱 셸 없이 그린다
   if (pathname === "/landing" || pathname === "/login") return null;
   return (
@@ -82,22 +85,25 @@ export function Sidebar({ user, isAdmin = false }: { user: SidebarUser; isAdmin?
           <div className="mt-auto border-t border-navy-soft pt-3">
             {user ? (
               <div className="flex items-center gap-2 px-1">
-                {user.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={user.image}
-                    alt=""
-                    className="h-7 w-7 rounded-full"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-navy-soft text-xs text-white">
-                    {(user.name ?? user.email ?? "?").slice(0, 1)}
+                {/* 프로필 클릭 → 마이페이지 */}
+                <Link href="/mypage" className="flex min-w-0 flex-1 items-center gap-2 rounded-lg py-1 hover:bg-navy-soft/60">
+                  {user.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={user.image}
+                      alt=""
+                      className="h-7 w-7 rounded-full"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-navy-soft text-xs text-white">
+                      {(user.name ?? user.email ?? "?").slice(0, 1)}
+                    </span>
+                  )}
+                  <span className="min-w-0 flex-1 truncate text-xs text-navy-text">
+                    {user.name ?? user.email}
                   </span>
-                )}
-                <span className="min-w-0 flex-1 truncate text-xs text-navy-text">
-                  {user.name ?? user.email}
-                </span>
+                </Link>
                 <form action={logout}>
                   <button className="text-xs text-navy-faint hover:text-white">
                     로그아웃
@@ -105,7 +111,9 @@ export function Sidebar({ user, isAdmin = false }: { user: SidebarUser; isAdmin?
                 </form>
               </div>
             ) : (
-              <p className="px-1 text-xs text-navy-faint">로컬 모드</p>
+              <Link href="/mypage" className="block px-1 text-xs text-navy-faint hover:text-white">
+                로컬 모드
+              </Link>
             )}
           </div>
         </div>
