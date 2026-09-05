@@ -76,7 +76,6 @@ export default async function ProjectsPage() {
       </header>
 
       <Card>
-        <SectionTitle>새 프로젝트</SectionTitle>
         <NewProjectForm
           action={createProject}
           areas={areaList.filter((a) => !a.archived).map((a) => ({ id: a.id, name: a.name, icon: a.icon }))}

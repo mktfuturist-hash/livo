@@ -125,9 +125,11 @@ export function Landing() {
       {/* 0. 스티키 헤더 */}
       <header className="full-bleed sticky top-0 z-50 -mt-6 border-b border-brand-mist bg-white/85 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 md:px-8">
-          <Link href="/landing" className="flex items-center gap-2">
-            <img src="/icons/icon-192.png" alt="" className="h-7 w-7 rounded-lg" />
-            <span className="text-lg font-extrabold tracking-tight text-brand-deep">WID</span>
+          <Link href="/landing" className="flex min-w-0 items-center gap-3">
+            <img src="/logo-wide-dark.png" alt="WID planner" className="h-8 w-auto shrink-0" />
+            <span className="hidden truncate text-xs italic text-brand-deep/60 md:block">
+              What I Do makes me Wiser.
+            </span>
           </Link>
           <div className="flex items-center gap-2">
             <Link
