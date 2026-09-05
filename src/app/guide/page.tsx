@@ -100,7 +100,7 @@ export default function GuidePage() {
             <Arrow label="영역 안에 목표를 만든다" />
             <FlowBox icon="🎯" name="목표 (Goal)" desc="기한 + 측정 방식 → D-day와 진척률 자동 계산" color="border-blue-200 bg-blue-50/50" />
             <Arrow label="목표를 중간 단계로 쪼갠다" />
-            <FlowBox icon="🚩" name="마일스톤 (Milestone)" desc="목표까지의 체크포인트 — 체크하면 진척률이 오른다" color="border-blue-100 bg-white" />
+            <FlowBox icon="🚩" name="중간 목표 (Milestone)" desc="목표까지의 체크포인트 — 체크하면 진척률이 오른다" color="border-blue-100 bg-white" />
             <Arrow label="목표를 실행 단위로 옮긴다" />
             <FlowBox icon="📁" name="프로젝트 (Project)" desc="기간이 있는 실행 묶음 — 타임라인·KPI·회고" color="border-emerald-200 bg-emerald-50/50" />
             <Arrow label="프로젝트를 완수할 작업을 나열한다" />
@@ -122,7 +122,7 @@ export default function GuidePage() {
         <Card>
           <h3 className="mb-2 text-sm font-bold">🔗 자동 연동 규칙 — 직접 외울 필요는 없지만, 알면 편한 것들</h3>
           <ul className="list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-neutral-600">
-            <li><b>목표 상세에서 마일스톤을 추가하면</b> 그 목표에 자동 연결됩니다. 체크할 때마다 목표 진척률이 다시 계산됩니다.</li>
+            <li><b>목표 상세에서 중간 목표을 추가하면</b> 그 목표에 자동 연결됩니다. 체크할 때마다 목표 진척률이 다시 계산됩니다.</li>
             <li><b>프로젝트 상세에서 할 일을 추가하면</b> 그 프로젝트에 자동 연결되고, 프로젝트의 완료율(3/7 같은)이 자동 집계됩니다.</li>
             <li><b>프로젝트를 목표에 연결하면</b>, 그 프로젝트의 할 일 완료율을 목표 진척률로 쓸 수 있습니다 (측정 방식: 프로젝트 할일 완료율).</li>
             <li><b>루틴을 목표에 연결하면</b>, 루틴 실행 횟수를 목표 진척률로 쓸 수 있습니다 (측정 방식: 루틴 실행 횟수 — 예: 러닝 100회).</li>
@@ -143,7 +143,7 @@ export default function GuidePage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-100 text-neutral-600">
-                <tr><td className="py-2 pr-3 font-medium">마일스톤 체크</td><td className="py-2 pr-3">완료 마일스톤 ÷ 전체</td><td className="py-2">단계가 명확한 목표 (예: 책 출간)</td></tr>
+                <tr><td className="py-2 pr-3 font-medium">중간 목표 체크</td><td className="py-2 pr-3">완료 중간 목표 ÷ 전체</td><td className="py-2">단계가 명확한 목표 (예: 책 출간)</td></tr>
                 <tr><td className="py-2 pr-3 font-medium">수치 직접 입력</td><td className="py-2 pr-3">현재값 ÷ 목표값</td><td className="py-2">몸무게, 구독자 수처럼 직접 재는 수치</td></tr>
                 <tr><td className="py-2 pr-3 font-medium">루틴 실행 횟수</td><td className="py-2 pr-3">연결 루틴 총 실행 ÷ 목표 횟수</td><td className="py-2">꾸준함 자체가 목표 (예: 운동 100회)</td></tr>
                 <tr><td className="py-2 pr-3 font-medium">프로젝트 할일 완료율</td><td className="py-2 pr-3">연결 프로젝트들의 할일 완료율</td><td className="py-2">실행 작업량이 곧 진척인 목표</td></tr>
@@ -159,7 +159,7 @@ export default function GuidePage() {
         <h2 className="text-xl font-bold">2. 시작 순서 — 반드시 위에서 아래로</h2>
         <p className="text-sm leading-relaxed text-neutral-600">
           할 일부터 쌓기 시작하면 며칠 안에 <b>&ldquo;내가 이걸 왜 하고 있지?&rdquo;</b>가 됩니다.
-          반대로 <b>영역 → 목표 → 마일스톤 → 프로젝트 → 할 일</b> 순서로 내려오면, 모든 할 일이
+          반대로 <b>영역 → 목표 → 중간 목표 → 프로젝트 → 할 일</b> 순서로 내려오면, 모든 할 일이
           어떤 목표를 위한 것인지 연결된 채로 시작됩니다. 아래 순서대로 한 단계씩 입력해 보세요.
         </p>
 
@@ -183,13 +183,13 @@ export default function GuidePage() {
             <p className="rounded-lg bg-neutral-50 p-2.5 text-xs">
               예시 — 🏃 건강: &ldquo;72kg까지 감량&rdquo; (수치 직접 입력, 12/31까지) / 💰 자산: &ldquo;비상금 3천만원&rdquo; (계좌 잔액 연동)
             </p>
-            <p>측정 방식이 애매하면 일단 <b>마일스톤 체크</b>로 시작하세요. 나중에 목표 상세에서 언제든 바꿀 수 있습니다.</p>
+            <p>측정 방식이 애매하면 일단 <b>중간 목표 체크</b>로 시작하세요. 나중에 목표 상세에서 언제든 바꿀 수 있습니다.</p>
           </Step>
 
-          <Step no={3} title="마일스톤으로 쪼개기 — 큰 목표를 체크포인트로" href="/goals" cta="목표 상세에서 마일스톤 추가">
+          <Step no={3} title="중간 목표으로 쪼개기 — 큰 목표를 체크포인트로" href="/goals" cta="목표 상세에서 중간 목표 추가">
             <p>
               목표를 클릭해 상세로 들어가서, 목표까지의 중간 단계를 기한과 함께 3~5개 추가합니다.
-              기한이 가장 가까운 미완료 마일스톤이 <b>&ldquo;🚩 다음 마일스톤&rdquo;</b>으로 항상
+              기한이 가장 가까운 미완료 중간 목표이 <b>&ldquo;🚩 다음 중간 목표&rdquo;</b>으로 항상
               표시되므로, 지금 뭘 하면 되는지 헤맬 일이 없습니다.
             </p>
             <p className="rounded-lg bg-neutral-50 p-2.5 text-xs">
@@ -289,7 +289,7 @@ export default function GuidePage() {
           </div>
           <div>
             <b className="text-neutral-800">Q. 진척률이 &mdash; 로 표시돼요.</b>
-            <p>측정 재료가 아직 없다는 뜻입니다. 마일스톤 방식인데 마일스톤이 0개이거나, 수치 방식인데 목표값이 비어있는 경우예요. 목표 상세에서 채워주세요.</p>
+            <p>측정 재료가 아직 없다는 뜻입니다. 중간 목표 방식인데 중간 목표이 0개이거나, 수치 방식인데 목표값이 비어있는 경우예요. 목표 상세에서 채워주세요.</p>
           </div>
           <div>
             <b className="text-neutral-800">Q. 목표를 완료하면 어떻게 하나요?</b>

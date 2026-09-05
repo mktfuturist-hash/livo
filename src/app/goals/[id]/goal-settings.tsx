@@ -6,7 +6,7 @@ import { NumberInput } from "@/components/number-input";
 import { fmtDate } from "@/lib/dates";
 
 const METRIC_LABEL: Record<string, string> = {
-  milestone: "마일스톤 체크",
+  milestone: "중간 목표 체크",
   manual: "수치 직접 입력",
   routine_count: "루틴 실행 횟수",
   task_rate: "프로젝트 할일 완료율",

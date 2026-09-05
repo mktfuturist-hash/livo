@@ -16,7 +16,7 @@ import { ddayLabel, fmtDate } from "@/lib/dates";
 import { AreaChip, Card, DdayBadge, Empty, FieldLabel, ProgressBar, SectionTitle } from "@/components/ui";
 
 const METRIC_LABEL: Record<string, string> = {
-  milestone: "마일스톤 체크",
+  milestone: "중간 목표 체크",
   manual: "수치 직접 입력",
   routine_count: "루틴 실행 횟수",
   task_rate: "프로젝트 할일 완료율",
@@ -80,7 +80,7 @@ export default async function GoalDetail({
         <div className="flex items-center justify-between text-sm">
           <span className="text-neutral-500">{METRIC_LABEL[g.metricType]}</span>
           <span className="font-medium tabular-nums text-neutral-700">
-            {g.metricType === "milestone" && `마일스톤 ${gp?.milestoneDone ?? 0}/${gp?.milestoneTotal ?? 0} 달성`}
+            {g.metricType === "milestone" && `중간 목표 ${gp?.milestoneDone ?? 0}/${gp?.milestoneTotal ?? 0} 달성`}
             {g.metricType === "task_rate" && `할 일 ${gp?.currentValue ?? 0}/${gp?.targetValue ?? 0} 완료`}
             {(g.metricType === "manual" || g.metricType === "routine_count" || g.metricType === "money") &&
               `${g.metricType === "manual" && g.metricStart != null ? `시작 ${g.metricStart.toLocaleString()}${g.metricUnit ?? ""} · ` : ""}현재 ${gp?.currentValue?.toLocaleString() ?? "—"}${g.metricUnit ?? ""} · 목표 ${gp?.targetValue?.toLocaleString() ?? "—"}${g.metricUnit ?? ""}`}
@@ -100,18 +100,18 @@ export default async function GoalDetail({
         )}
         {next && (
           <p className="text-sm text-neutral-500">
-            🚩 다음 마일스톤: <b>{next.title}</b>
+            🚩 다음 중간 목표: <b>{next.title}</b>
             {next.dueDate && ` — ${fmtDate(next.dueDate)} (${ddayLabel(next.dueDate)})`}
           </p>
         )}
       </header>
 
       <Card>
-        <SectionTitle>마일스톤 ({gp?.milestoneDone ?? 0}/{gp?.milestoneTotal ?? 0})</SectionTitle>
-        {/* 마일스톤 체크 방식이 아니면 진척률과 무관한 선택 항목임을 안내 */}
+        <SectionTitle>중간 목표 ({gp?.milestoneDone ?? 0}/{gp?.milestoneTotal ?? 0})</SectionTitle>
+        {/* 중간 목표 체크 방식이 아니면 진척률과 무관한 선택 항목임을 안내 */}
         {g.metricType !== "milestone" && (
           <p className="-mt-1 mb-3 text-xs text-neutral-400">
-            이 목표의 진척률은 &lsquo;{METRIC_LABEL[g.metricType]}&rsquo;으로 계산됩니다 — 마일스톤은 필수가 아니라 선택적인 중간 체크포인트예요.
+            이 목표의 진척률은 &lsquo;{METRIC_LABEL[g.metricType]}&rsquo;으로 계산됩니다 — 중간 목표은 필수가 아니라 선택적인 중간 체크포인트예요.
           </p>
         )}
         {ms.length === 0 ? (
@@ -131,8 +131,8 @@ export default async function GoalDetail({
         )}
         <form action={addMilestone.bind(null, g.id)} className="mt-3 flex items-end gap-2 border-t border-neutral-100 pt-3">
           <label className="flex-1">
-            <FieldLabel>마일스톤</FieldLabel>
-            <input name="title" placeholder="새 마일스톤" required className="w-full" />
+            <FieldLabel>중간 목표</FieldLabel>
+            <input name="title" placeholder="새 중간 목표" required className="w-full" />
           </label>
           <label>
             <FieldLabel>기한</FieldLabel>
@@ -164,7 +164,7 @@ export default async function GoalDetail({
 
       <form action={deleteGoal.bind(null, g.id)}>
         <ConfirmButton
-          message={`'${g.title}' 목표를 삭제할까요? 마일스톤도 함께 삭제됩니다.`}
+          message={`'${g.title}' 목표를 삭제할까요? 중간 목표도 함께 삭제됩니다.`}
           className="cursor-pointer text-xs text-neutral-400 hover:text-red-500"
         >
           이 목표 삭제

@@ -13,7 +13,7 @@ import { ConfirmButton } from "@/components/confirm-button";
 export const dynamic = "force-dynamic";
 
 const METRIC_LABEL: Record<string, string> = {
-  milestone: "마일스톤 체크",
+  milestone: "중간 목표 체크",
   manual: "수치 직접 입력",
   routine_count: "루틴 실행 횟수",
   task_rate: "프로젝트 할일 완료율",
@@ -44,7 +44,7 @@ export default async function GoalsPage() {
       <header>
         <h1 className="text-2xl font-bold">🎯 목표</h1>
         <p className="mt-1 text-sm text-neutral-500">
-          기한과 측정 방식을 정하면 진척률이 자동으로 계산됩니다.
+          어디로 가는가 — 기한과 측정 방식을 정하면 진척률이 자동으로 계산됩니다.
         </p>
       </header>
 
@@ -110,7 +110,7 @@ export default async function GoalsPage() {
                       </Link>
                       <form action={deleteGoal.bind(null, g.id)}>
                         <ConfirmButton
-                          message={`'${g.title}' 목표를 삭제할까요? 마일스톤도 함께 삭제됩니다.`}
+                          message={`'${g.title}' 목표를 삭제할까요? 중간 목표도 함께 삭제됩니다.`}
                           className="cursor-pointer rounded-lg border border-neutral-300 bg-white px-2 py-1 text-xs text-neutral-600 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                         >
                           삭제
@@ -121,7 +121,7 @@ export default async function GoalsPage() {
                   <div className="mt-2.5">
                     <ProgressBar value={g.progress} pillar={area?.pillar ?? "life"} />
                   </div>
-                  {/* 마일스톤 측정 목표는 카드 안에 마일스톤 목록·달성 여부를 바로 보여준다 */}
+                  {/* 중간 목표 측정 목표는 카드 안에 중간 목표 목록·달성 여부를 바로 보여준다 */}
                   {goalMs.length > 0 && (
                     <ul className="mt-2.5 space-y-1 border-t border-neutral-100 pt-2.5">
                       {goalMs.map((m) => (

@@ -11,23 +11,24 @@ export type SidebarUser = {
   image: string | null;
 } | null;
 
-type NavItem = { href: string; label: string; icon: string; group?: boolean };
+type NavItem = { href: string; label: string; icon: string; group?: boolean; groupLabel?: string };
 
+/* 메뉴는 세 묶음 — 실행(오늘 움직인다) / 계획(어디로 갈지 정한다) / 기록(쌓아둔다) */
 const NAV: NavItem[] = [
   { href: "/", label: "홈", icon: "🏠" },
-  // 계층: 영역 > 목표 > 프로젝트 > 할 일 / 루틴
-  { href: "/areas", label: "영역", icon: "🗂️", group: true },
+  { href: "/today", label: "오늘", icon: "☀️", group: true, groupLabel: "실행 — 오늘 움직인다" },
+  { href: "/tasks", label: "전체 할 일", icon: "✅" },
+  { href: "/routines", label: "데일리 루틴", icon: "🔁" },
+  // 계층: 영역 > 목표(중간 목표) > 프로젝트 > 할 일
+  { href: "/areas", label: "영역", icon: "🗂️", group: true, groupLabel: "계획 — 어디로 갈지 정한다" },
   { href: "/goals", label: "목표", icon: "🎯" },
   { href: "/projects", label: "프로젝트", icon: "📁" },
-  { href: "/tasks", label: "할 일", icon: "✅" },
-  { href: "/routines", label: "루틴", icon: "🔁" },
-  // 기록·관리
-  { href: "/notes", label: "노트", icon: "📝", group: true },
+  { href: "/notes", label: "노트", icon: "📝", group: true, groupLabel: "기록 — 쌓아둔다" },
   { href: "/reviews", label: "계획·회고", icon: "🪞" },
   { href: "/money", label: "머니", icon: "💰" },
 ];
 
-const MOBILE_TABS = ["/", "/tasks", "/routines", "/money"];
+const MOBILE_TABS = ["/", "/today", "/goals", "/money"];
 const mobileNav = MOBILE_TABS.map(
   (href) => NAV.find((item) => item.href === href)!,
 );
@@ -66,7 +67,13 @@ export function Sidebar({ user, isAdmin = false }: { user: SidebarUser; isAdmin?
               return (
                 <div key={item.href}>
                   {item.group && (
-                    <div className="my-2 border-t border-navy-soft" />
+                    <div className="mb-1 mt-3 border-t border-navy-soft pt-2">
+                      {item.groupLabel && (
+                        <div className="px-2.5 text-[10px] font-semibold tracking-wide text-navy-faint">
+                          {item.groupLabel}
+                        </div>
+                      )}
+                    </div>
                   )}
                   <Link
                     href={item.href}
@@ -183,7 +190,15 @@ export function Sidebar({ user, isAdmin = false }: { user: SidebarUser; isAdmin?
                   item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
                 return (
                   <div key={item.href}>
-                    {item.group && <div className="my-2 border-t border-navy-soft" />}
+                    {item.group && (
+                      <div className="mb-1 mt-3 border-t border-navy-soft pt-2">
+                        {item.groupLabel && (
+                          <div className="px-2.5 text-[10px] font-semibold tracking-wide text-navy-faint">
+                            {item.groupLabel}
+                          </div>
+                        )}
+                      </div>
+                    )}
                     <Link
                       href={item.href}
                       className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm ${

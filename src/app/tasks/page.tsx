@@ -66,7 +66,10 @@ export default async function TasksPage({
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-bold">✅ 할 일</h1>
+        <h1 className="text-2xl font-bold">✅ 전체 할 일</h1>
+        <p className="mt-1 text-sm text-neutral-500">
+          프로젝트에서 내려온 1회성 행동 전부 — 오늘 할 것은 ☀️ 오늘에서 체크하세요.
+        </p>
       </header>
 
       {/* 빠른 입력: 제목만 치면 인박스로, 날짜를 넣으면 오늘/예정으로 */}
