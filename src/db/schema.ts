@@ -19,6 +19,8 @@ export const users = pgTable("users", {
   // 개인정보 수집·이용 동의 입증용 — 최초 가입 시 기록
   privacyAgreedAt: timestamp("privacy_agreed_at"),
   privacyPolicyVersion: text("privacy_policy_version"),
+  /* 관리자 플래그 — /admin 접근 권한. 환경변수 대신 DB로 판별한다 */
+  isAdmin: boolean("is_admin").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
