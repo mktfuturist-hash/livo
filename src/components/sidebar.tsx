@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logout } from "@/lib/actions";
@@ -33,6 +34,9 @@ const mobileNav = MOBILE_TABS.map(
 
 export function Sidebar({ user, isAdmin = false }: { user: SidebarUser; isAdmin?: boolean }) {
   const pathname = usePathname();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  // 페이지 이동 시 모바일 드로어 닫기
+  useEffect(() => setDrawerOpen(false), [pathname]);
   // 마이페이지는 모두에게, 어드민은 마이페이지 안에서 진입 (관리자에게는 메뉴에도 노출)
   const nav = [
     ...NAV,
@@ -118,6 +122,96 @@ export function Sidebar({ user, isAdmin = false }: { user: SidebarUser; isAdmin?
           </div>
         </div>
       </aside>
+
+      {/* 모바일 상단 헤더 — 남색 바: 로고 + 마이페이지 + 전체 메뉴(햄버거) */}
+      <header className="fixed inset-x-0 top-0 z-40 flex h-14 items-center justify-between bg-navy px-4 md:hidden">
+        <Link href="/" className="flex items-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-wide.png" alt="WID planner" className="h-7 w-auto" />
+        </Link>
+        <div className="flex items-center gap-1">
+          <Link
+            href="/mypage"
+            aria-label="마이페이지"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-lg hover:bg-navy-soft"
+          >
+            {user?.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={user.image} alt="" className="h-6 w-6 rounded-full" referrerPolicy="no-referrer" />
+            ) : (
+              <span aria-hidden>👤</span>
+            )}
+          </Link>
+          <button
+            type="button"
+            aria-label="전체 메뉴 열기"
+            className="flex h-9 w-9 flex-col items-center justify-center gap-[5px] rounded-lg hover:bg-navy-soft"
+            onClick={() => setDrawerOpen(true)}
+          >
+            <span className="h-0.5 w-5 rounded-full bg-navy-text" />
+            <span className="h-0.5 w-5 rounded-full bg-navy-text" />
+            <span className="h-0.5 w-5 rounded-full bg-navy-text" />
+          </button>
+        </div>
+      </header>
+
+      {/* 모바일 세로형 GNB 드로어 */}
+      {drawerOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <button
+            type="button"
+            aria-label="메뉴 닫기"
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setDrawerOpen(false)}
+          />
+          <div className="absolute inset-y-0 right-0 flex w-64 flex-col bg-navy p-4 shadow-xl">
+            <div className="mb-4 flex items-center justify-between px-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-wide.png" alt="WID planner" className="h-6 w-auto" />
+              <button
+                type="button"
+                aria-label="닫기"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-lg text-navy-text hover:bg-navy-soft"
+                onClick={() => setDrawerOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <nav className="min-h-0 flex-1 space-y-0.5 overflow-y-auto">
+              {nav.map((item) => {
+                const active =
+                  item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+                return (
+                  <div key={item.href}>
+                    {item.group && <div className="my-2 border-t border-navy-soft" />}
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm ${
+                        active
+                          ? "bg-navy-soft font-medium text-white"
+                          : "text-navy-text hover:bg-navy-soft/60 hover:text-white"
+                      }`}
+                    >
+                      <span className="text-base">{item.icon}</span>
+                      {item.label}
+                    </Link>
+                  </div>
+                );
+              })}
+            </nav>
+            {user && (
+              <div className="mt-3 flex items-center justify-between gap-2 border-t border-navy-soft px-2 pt-3">
+                <span className="min-w-0 truncate text-xs text-navy-text">
+                  {user.name ?? user.email}
+                </span>
+                <form action={logout}>
+                  <button className="text-xs text-navy-faint hover:text-white">로그아웃</button>
+                </form>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* 모바일 하단 탭바: 홈·할일·루틴·가계부 */}
       <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-neutral-200 bg-white/95 backdrop-blur md:hidden">

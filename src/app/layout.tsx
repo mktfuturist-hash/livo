@@ -27,7 +27,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full bg-neutral-50 text-neutral-900">
         <div className="flex min-h-screen">
           {showSidebar && <Sidebar user={user} isAdmin={admin} />}
-          <main className="min-w-0 flex-1 px-4 pb-24 pt-6 md:px-8 md:pb-10">
+          {/* 모바일은 상단 고정 헤더(h-14) 아래로 내용 시작 */}
+          <main className={`min-w-0 flex-1 px-4 pb-24 md:px-8 md:pb-10 md:pt-6 ${showSidebar ? "pt-20" : "pt-6"}`}>
             <div className="mx-auto max-w-5xl">{children}</div>
           </main>
         </div>
